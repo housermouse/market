@@ -2,7 +2,7 @@
     <div class="product" style="min-width:1100px">
         <el-card class="box-card" >
             <div slot="header" class="clearfix">
-                <h3>商品管理</h3>
+                <h3>销售管理</h3>
             </div>
             <div class="text item">
                 <!-- 表单 -->
@@ -48,22 +48,22 @@
 
                 >
                     <!--table的属性 @selection-change="handleSelectionChange" -->
-                    <el-table-column type="selection" width="55"></el-table-column>
+<!--                    <el-table-column type="selection" width="55"></el-table-column>-->
                     <el-table-column prop="barCode" label="条形码"></el-table-column>
                     <el-table-column prop="name" label="商品名称"></el-table-column>
                     <el-table-column prop="category" label="商品分类"></el-table-column>
                     <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
-                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>
-                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>
+<!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
+<!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
                     <el-table-column prop="stockCount" label="库存"></el-table-column>
                     <el-table-column prop="commodityWeight" label="重量"></el-table-column>
                     <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
                     <el-table-column label="操作" width='180px'>
                         <template slot-scope="scope">
                             <el-button size="mini"  @click="handleEdit(scope.row)">
-                                <i class="el-icon-edit"></i>编辑</el-button>
-                            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">
-                                <i class="el-icon-delete"></i>删除</el-button>
+                                <i class="el-icon-edit"></i>购买</el-button>
+<!--                            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">-->
+<!--                                <i class="el-icon-delete"></i>删除</el-button>-->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -81,32 +81,35 @@
 
                 <!-- 按钮 -->
                 <div style="margin-top:20px">
-                    <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>
-                    <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>
+<!--                    <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>-->
+<!--                    <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>-->
                 </div>
             </div>
         </el-card>
 
 
         <!-- 修改弹窗 -->
-        <el-dialog title="修改" :visible.sync="dialogFormVisible">
+        <el-dialog title="购买" :visible.sync="dialogFormVisible">
             <el-form :model="editForm">
                 <!-- 用户名 -->
                 <el-form-item label="产品名">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.name" :disabled="true" auto-complete="off"></el-input>
                 </el-form-item>
                 <!-- 售价 -->
                 <el-form-item label="售价">
-                    <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.salePrice" :disabled="true" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="数量" prop="stockCount">
+                    <el-input v-model="editForm.buyCount"></el-input>
                 </el-form-item>
                 <!-- 市场价 -->
-                <el-form-item label="市场价">
-                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 进价 -->
-                <el-form-item label="进价">
-                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>
-                </el-form-item>
+<!--                <el-form-item label="市场价">-->
+<!--                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
+<!--                &lt;!&ndash; 进价 &ndash;&gt;-->
+<!--                <el-form-item label="进价">-->
+<!--                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>

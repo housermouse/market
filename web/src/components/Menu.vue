@@ -64,7 +64,7 @@ export default {
           roles:[1,2], // 超级管理员
           children: [
             { index: "/home/product", name: "商品管理" },
-            { index: "/home/addProduct", name: "添加管理" }
+            { index: "/home/addProduct", name: "添加商品" }
           ]
         },
         {
