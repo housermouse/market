@@ -10,7 +10,7 @@ const connection = require('../db/mysqlConn')
 
 
 // SQL拼装函数
-function getSql(barCode,customer){
+function getSql(barCode,customer,id){
     // 1.准备
     let sql = 'SELECT id,category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,customer FROM t_shopping_cart';
     // 是否是第一个条件的标志
@@ -33,6 +33,17 @@ function getSql(barCode,customer){
             sql+= ` WHERE customer='${customer}'`
         }else{// 不是第一个条件
             sql+= ` AND customer='${customer}'`
+        }
+
+        first=false
+    }
+
+    // 2.执行判断
+    if(id&&id!=""){
+        if(first){ // 第一个条件
+            sql+= ` WHERE id='${id}'`
+        }else{// 不是第一个条件
+            sql+= ` AND id='${id}'`
         }
 
         first=false
@@ -224,18 +235,36 @@ router.get("/batchdel" , (req,res) => {
 
     //接收请求参数
     let {IdArr} = req.query; //IdArr是个数组
-    console.log(IdArr);
     //准备sql
-    let sqlStr = `DELETE FROM t_commodity WHERE id IN (${IdArr})`;
+    for(let id in IdArr){
+        connection.query(getSql("","",IdArr[id]), function (error, getData) {
+            if (error) throw error;
+            console.log(getData)
+            if(getData.length>0) {
+                const getproductSql = `select * from t_commodity where barCode = '${getData[0].barCode}'`;
+                connection.query(getproductSql, function (error, getProductData) {
+                    if (error) throw error;
+                    console.log(getproductSql)
+                    if(getProductData.length>0){
+                        const sql = `UPDATE t_commodity SET stockCount=${parseInt(getData[0].stockCount) + parseInt(getProductData[0].stockCount)} WHERE barCode=${getData[0].barCode}`
+                        connection.query(sql, (err) => {
+                            if (err) throw err;
+                        })
+                    }
+                })
 
+            }
+        })
+    }
     //执行sql
-    connection.query(sqlStr , (err,data) => {
-        if(err) throw err;
+    let sqlStr = `DELETE FROM t_shopping_cart WHERE id IN (${IdArr})`;
+    connection.query(sqlStr, (err, data) => {
+        if (err) throw err;
         // res.send(sqlStr)
-        if(data.affectedRows ===1 ){
-            res.send({code:0,reason:"删除商品成功"})
-        }else{
-            res.send({code:1,reason:"删除商品失败"})
+        if (data.affectedRows > 0) {
+            res.send({code: 0, reason: "删除商品成功"})
+        } else {
+            res.send({code: 1, reason: "删除商品失败"})
         }
 
     })

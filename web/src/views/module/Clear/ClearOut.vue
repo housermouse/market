@@ -35,7 +35,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" size="small" @click="doSearch">查询</el-button>
-                      <el-button type="primary" size="small" @click="doSearch">全部出库</el-button>
+                      <el-button type="primary" size="small" @click="batchclear">全部出库</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 表格 -->
@@ -43,6 +43,7 @@
                         :data="tableData"
                         @selection-change="SelectionChange"
                         stripe
+                        id="print_demo"
                         ref="tableData"
                         tooltip-effect="dark"
                         style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;"
@@ -50,13 +51,13 @@
                 >
                     <!--table的属性 @selection-change="handleSelectionChange" -->
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column prop="barCode" label="条形码"></el-table-column>
+<!--                    <el-table-column prop="barCode" label="条形码"></el-table-column>-->
                     <el-table-column prop="name" label="商品名称"></el-table-column>
                     <el-table-column prop="category" label="商品分类"></el-table-column>
                     <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
 <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
 <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
-                    <el-table-column prop="stockCount" label="库存"></el-table-column>
+                    <el-table-column prop="stockCount" label="数量"></el-table-column>
                     <el-table-column prop="commodityWeight" label="重量"></el-table-column>
                     <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
                     <el-table-column label="操作" width='180px'>
@@ -84,7 +85,6 @@
                 <div style="margin-top:20px">
                     <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>
                     <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>
-                  <el-button type="primary" size="mini" @click="batchclear">批量出库</el-button>
                 </div>
             </div>
         </el-card>
@@ -121,7 +121,8 @@
 
 <script>
 
-    import { getCleartList,productDelete,updateProduct,getClearDatatByPage,batchdelProduct} from "@/api/apis.js";
+    import { getCleartList,clearDelete,updateProduct,getClearDatatByPage,batchdelClear} from "@/api/apis.js";
+    import * as printJS from "print-js";
 
     export default {
         data() {
@@ -144,7 +145,6 @@
                 dialogFormVisible: false,
                 editId: "",
                 IdArr: [], //选中数据的id
-
                 // 分页
                 InventorytableData: [],
                 currentPage: 1, //当前页
@@ -183,7 +183,7 @@
                 })
                     .then(() => {
                         //成功
-                        productDelete( id )
+                        clearDelete( id )
                             .then(res => {
                                 //接收响应数据
                                 let { code, reason } = res;
@@ -206,6 +206,64 @@
                     .catch(() => {
                     });
             },
+          batchclear(){
+            const _this= this;
+            getCleartList(this.searchForm.barCode,_this.name)
+                .then(resultData =>{
+                  this.list = resultData || [];
+                  let data = []
+                  for (let i=0; i < this.list.length; i++) {
+                    data.push({
+                      name: this.list[i].name,
+                      category: this.list[i].category,
+                      salePrice: this.list[i].salePrice,
+                      stockCount: this.list[i].stockCount,
+                      commodityWeight: this.list[i].commodityWeight,
+                      commodityUnit: this.list[i].commodityUnit,
+                    })
+                  }
+                  printJS({
+                    printable: data,
+                    properties: [
+                      {
+                        field: 'name',
+                        displayName: '商品名称',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'category',
+                        displayName: '商品分类',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'salePrice',
+                        displayName: '售价',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'stockCount',
+                        displayName: '数量',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'commodityWeight',
+                        displayName: '重量',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'commodityUnit',
+                        displayName: '单位',
+                        columnSize: 1
+                      }
+                    ],
+                    type: 'json',
+                    header: '标题',
+                    // 样式设置
+                    gridStyle: 'border: 2px solid #3971A5;',
+                    gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'
+                  })
+                })
+          },
 
             //修改信息、再渲染
             updateProduct() {
@@ -287,7 +345,7 @@
                 })
                     .then(() => {
                         //发送ajax
-                        batchdelProduct(_this.IdArr)
+                        batchdelClear(_this.IdArr)
                             .then(res => {
                                 //接收响应参数
 

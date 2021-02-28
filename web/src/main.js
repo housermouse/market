@@ -8,15 +8,15 @@ import App from './App.vue'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import Print from 'vue-print-nb'
 
 // 引入echarts
 import echarts from 'echarts'
 
-
 // 引入全局重置样式
 import "normalize.css";
 import "@/assets/styles/common.css";
-
+Vue.use(Print);
 Vue.use(ElementUI); // 注册全局组件,   Vue.use使用的大模块,内部会自动提供install方法(可以做全局注册)
 
 Vue.config.productionTip = false

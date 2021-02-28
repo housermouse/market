@@ -334,3 +334,19 @@
                 }
             })
         }
+
+        // 2 删除商品数据
+        export const clearDelete=(id)=>{
+            return axiosInstance.get("/clear/deletedata",{
+                params:{
+                    id
+                }
+            }).then(({data})=>{
+                return data // 直接返回数据对象
+            })
+        }
+
+        // 6 批量删除用户
+        export const batchdelClear=(IdArr)=>{
+            return axiosInstance.get("/clear/batchdel" , {params:{IdArr}})
+        }
