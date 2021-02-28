@@ -2,7 +2,7 @@
     <div class="product" style="min-width:1100px">
         <el-card class="box-card" >
             <div slot="header" class="clearfix">
-                <h3>商品管理</h3>
+                <h3>商品出库</h3>
             </div>
             <div class="text item">
                 <!-- 表单 -->

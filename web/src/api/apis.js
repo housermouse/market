@@ -301,3 +301,36 @@
         export const batchDeleteVip=(IdArr)=>{
             return axiosInstance.get("/vip/batchdel" , {params:{IdArr}})
         }
+
+// ---------------------------------------------------------------------------------------
+
+        // 1 商品出库
+        export const clearProduct = (data,name)=>{
+            return axiosInstance
+                .post('/clear/clearProduct',{data:data,name:name})
+                .then((resp)=>{
+                    return resp.data // 直接返回数据对象
+                })
+        }
+
+
+        // 1 商品列表
+        export const getCleartList = (barCode,name) => {
+            // eslint-disable-next-line no-console
+        console.log(barCode)
+            return axiosInstance
+                .post('/clear/getClearList', {barCode:barCode,name})
+                .then(({ data }) => {
+                    return data // 直接返回数据对象
+                })
+        }
+
+        // 5 用户分页
+        export const getClearDatatByPage=(currentPage,pageSize)=>{
+            return  axiosInstance.get("/clear/getdatabypage", {
+                params:{
+                    currentPage,
+                    pageSize
+                }
+            })
+        }

@@ -113,7 +113,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateProduct">更 新</el-button>
+                <el-button type="primary" @click="clearProduct">更 新</el-button>
             </div>
         </el-dialog>
     </div>
@@ -122,39 +122,48 @@
 
 <script>
 
-    import { getProductList,productDelete,updateProduct,getProductDataByPage,batchdelProduct} from "@/api/apis.js";
+import {
+  clearProduct,
+  getProductList,
+  productDelete,
+  getProductDataByPage,
+  batchdelProduct,
+  getLoginUsername
+} from "@/api/apis.js";
 
     export default {
         data() {
             return {
-                searchForm: {
-                    category: "",
-                    searchKey: ""
-                },
-                tableData:[],
+              name:'',
+              searchForm: {
+                  category: "",
+                  searchKey: ""
+              },
+              tableData:[],
 
-                editForm: {
-                    id: "",
-                    name: "",
-                    salePrice: "",
-                    marketPrice: "",
-                    stockPrice: "",
-                },
+              editForm: {
+                  id: "",
+                  name: "",
+                  salePrice: "",
+                  marketPrice: "",
+                  stockPrice: "",
+              },
 
-                // dialog对话框的默认显示状态
-                dialogFormVisible: false,
-                editId: "",
-                IdArr: [], //选中数据的id
+              // dialog对话框的默认显示状态
+              dialogFormVisible: false,
+              editId: "",
+              IdArr: [], //选中数据的id
 
-                // 分页
-                InventorytableData: [],
-                currentPage: 1, //当前页
-                pageSize: 5, //每页数据条数
-                total: 10, //总数据条数
-                visible: false
+              // 分页
+              InventorytableData: [],
+              currentPage: 1, //当前页
+              pageSize: 5, //每页数据条数
+              total: 10, //总数据条数
+              visible: false
             };
         },
         methods: {
+
 
             //渲染页面
             getProductList(){
@@ -209,10 +218,18 @@
             },
 
             //修改信息、再渲染
-            updateProduct() {
-                const _this = this;
+          clearProduct() {
+            const _this = this;
 
-                updateProduct(this.editForm).then(result => {
+            clearProduct(this.editForm,this.name).then(result => {
+              if(this.editForm.buyCount>this.editForm.stockCount){
+                this.$message({
+                  // 删除失败
+                  type: "error",
+                  message: "商品数量不足，无法购买"
+                });
+                return ;
+              }
                     if (result.success) {
                         this.$message({
                             // 修改成功
@@ -328,7 +345,19 @@
         },
         //页面加载时候调用一次渲染
         mounted() {
-            this.ajaxgetListProduct(this.currentPage);
+          const token = localStorage.getItem('token');
+          const _this = this;
+          getLoginUsername(token)
+              .then((result)=>{
+
+                // 成功
+                if(result.success){
+                  _this.name = result.name
+                }else{
+                  // 失败提示,跳转登录
+                }
+              })
+          this.ajaxgetListProduct(this.currentPage);
         }
     };
 </script>

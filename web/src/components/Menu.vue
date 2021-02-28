@@ -96,7 +96,7 @@ export default {
           children: [
             { index: "/home/clear", name: "销售列表" },
             { index: "/home/clearout", name: "商品出库" },
-            { index: "/home/clearback", name: "商品退货" }
+            // { index: "/home/clearback", name: "商品退货" }
           ]
         },
         {

@@ -2,7 +2,7 @@
     <div class="product" style="min-width:1100px">
         <el-card class="box-card" >
             <div slot="header" class="clearfix">
-                <h3>商品管理</h3>
+                <h3>商品出库</h3>
             </div>
             <div class="text item">
                 <!-- 表单 -->
@@ -28,13 +28,14 @@
                     <el-form-item label="关键字：">
                         <el-input
                                 style="width:200px"
-                                v-model="searchForm.searchKey"
+                                v-model="searchForm.barCode"
                                 placeholder="(商品名称，条形码)"
                                 size="small"
                         ></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" size="small" @click="doSearch">查询</el-button>
+                      <el-button type="primary" size="small" @click="doSearch">全部出库</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 表格 -->
@@ -53,15 +54,15 @@
                     <el-table-column prop="name" label="商品名称"></el-table-column>
                     <el-table-column prop="category" label="商品分类"></el-table-column>
                     <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
-                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>
-                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>
+<!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
+<!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
                     <el-table-column prop="stockCount" label="库存"></el-table-column>
                     <el-table-column prop="commodityWeight" label="重量"></el-table-column>
                     <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
                     <el-table-column label="操作" width='180px'>
                         <template slot-scope="scope">
-                            <el-button size="mini"  @click="handleEdit(scope.row)">
-                                <i class="el-icon-edit"></i>编辑</el-button>
+<!--                            <el-button size="mini"  @click="handleEdit(scope.row)">-->
+<!--                                <i class="el-icon-edit"></i>编辑</el-button>-->
                             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">
                                 <i class="el-icon-delete"></i>删除</el-button>
                         </template>
@@ -83,6 +84,7 @@
                 <div style="margin-top:20px">
                     <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>
                     <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>
+                  <el-button type="primary" size="mini" @click="batchclear">批量出库</el-button>
                 </div>
             </div>
         </el-card>
@@ -119,7 +121,7 @@
 
 <script>
 
-    import { getProductList,productDelete,updateProduct,getProductDataByPage,batchdelProduct} from "@/api/apis.js";
+    import { getCleartList,productDelete,updateProduct,getClearDatatByPage,batchdelProduct} from "@/api/apis.js";
 
     export default {
         data() {
@@ -154,9 +156,9 @@
         methods: {
 
             //渲染页面
-            getProductList(){
+          getCleartList(){
                 // 发送请求加载数据
-                getProductList().then(data => {
+            getCleartList().then(data => {
                     // 把结果更新到数据对象,由双向绑定完成页面更新
                     this.tableData = data;
                 });
@@ -165,7 +167,7 @@
             //查询用户
             doSearch(){
                 const _this= this;
-                getProductList(this.searchForm)
+              getCleartList(this.searchForm.barCode,_this.name)
                     .then(data =>{
                         _this.tableData = data;
                     })
@@ -193,7 +195,7 @@
                                         message: reason
                                     });
                                     //重新刷新页面 -- 再次请求数据
-                                    this.getProductList();
+                                    this.getCleartList();
                                 }
                                 else if (code === 1) {
                                     //失败
@@ -220,7 +222,7 @@
                                 // 先隐藏对话框
                                 _this.dialogFormVisible = false;
                                 // 刷新页面
-                                _this.getProductList();
+                                _this.getCleartList();
                             }
                         });
                     } else {
@@ -243,7 +245,7 @@
 
             // 分页
             ajaxgetListProduct() {
-                getProductDataByPage(this.currentPage, this.pageSize).then(res => {
+              getClearDatatByPage(this.currentPage, this.pageSize).then(res => {
                     this.tableData = res.data.data;
                     this.total = res.data.total;
                 });
