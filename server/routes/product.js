@@ -102,8 +102,8 @@ router.post('/updateProduct',(req, resp) => {
 // 用户添加
 router.post('/productAdd', (req, resp) => {
     // 1、接受请求参数
-    const { category, barCode, name, salePrice, marketPrice, stockPrice, stockCount, commodityWeight, commodityUnit, vipDiscount, promotion, goodsDesc} = req.body;
-
+    const { category, barCode, name, salePrice, marketPrice, stockPrice, stockCount, commodityWeight, commodityUnit, vipDiscount, promotion, goodsDesc,birthDay} = req.body;
+    console.log(req.body);
     // 2、处理请求
     // 2.1 用户添加第一步：  验证用户名是否重复
     const sql = `SELECT * FROM t_commodity WHERE name='${name}'`
@@ -118,8 +118,9 @@ router.post('/productAdd', (req, resp) => {
            message:"产品已重复,请重新输入"
         })
         } else { // 新用户名可用
+           console.log(birthDay);
             // 2.2 用户添加第二步：  用户的添加
-            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}')`
+            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,birthDay) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}','${(birthDay)}')`
 			console.log(addSql);
             connection.query(addSql, (err, result) => {
                 if (err) throw err;

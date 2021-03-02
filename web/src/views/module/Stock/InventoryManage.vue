@@ -96,7 +96,7 @@
               <el-input v-model="editForm.stockCount" auto-complete="off"></el-input>
             </el-form-item>
             <!-- 市场价 -->
-            <el-form-item label="市场价">
+            <el-form-item label="进价">
               <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>
             </el-form-item>
             <!-- 条形码 -->

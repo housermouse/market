@@ -56,7 +56,7 @@
 <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
 <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
                     <el-table-column prop="stockCount" label="库存"></el-table-column>
-                    <el-table-column prop="commodityWeight" label="重量"></el-table-column>
+                    <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>
                     <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
                     <el-table-column label="操作" width='180px'>
                         <template slot-scope="scope">
@@ -220,38 +220,38 @@ import {
             //修改信息、再渲染
           clearProduct() {
             const _this = this;
-
-            clearProduct(this.editForm,this.name).then(result => {
-              if(this.editForm.buyCount>this.editForm.stockCount){
-                this.$message({
-                  // 删除失败
-                  type: "error",
-                  message: "商品数量不足，无法购买"
-                });
-                return ;
-              }
-                    if (result.success) {
-                        this.$message({
-                            // 修改成功
-                            type: "success",
-                            message: result.message,
-                            duration: 500,
-                            onClose() {
-                                // 先隐藏对话框
-                                _this.dialogFormVisible = false;
-                                // 刷新页面
-                                _this.getProductList();
-                            }
-                        });
-                    } else {
-                        this.$message({
-                            // 删除失败
-                            type: "error",
-                            message: result.message
-                        });
-                    }
-                });
-            },
+            if(this.editForm.buyCount>this.editForm.stockCount){
+              this.$message({
+                // 删除失败
+                type: "error",
+                message: "商品数量不足，无法购买"
+              });
+              return ;
+            }else{
+              clearProduct(this.editForm,this.name).then(result => {
+                if (result.success) {
+                    this.$message({
+                        // 修改成功
+                        type: "success",
+                        message: result.message,
+                        duration: 500,
+                        onClose() {
+                            // 先隐藏对话框
+                            _this.dialogFormVisible = false;
+                            // 刷新页面
+                            _this.getProductList();
+                        }
+                    });
+                } else {
+                    this.$message({
+                        // 删除失败
+                        type: "error",
+                        message: result.message
+                    });
+                }
+              });
+            }
+          },
 
 
             handleEdit(row) {

@@ -54,11 +54,11 @@
 <!--                    <el-table-column prop="barCode" label="条形码"></el-table-column>-->
                     <el-table-column prop="name" label="商品名称"></el-table-column>
                     <el-table-column prop="category" label="商品分类"></el-table-column>
-                    <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
+                    <el-table-column prop="salePrice" label="商品(元)"></el-table-column>
 <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
 <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
                     <el-table-column prop="stockCount" label="数量"></el-table-column>
-                    <el-table-column prop="commodityWeight" label="重量"></el-table-column>
+                    <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>
                     <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
                     <el-table-column label="操作" width='180px'>
                         <template slot-scope="scope">
@@ -247,7 +247,7 @@
                       },
                       {
                         field: 'commodityWeight',
-                        displayName: '重量',
+                        displayName: '商品产地',
                         columnSize: 1
                       },
                       {

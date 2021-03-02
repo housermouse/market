@@ -54,9 +54,9 @@
           <el-table-column prop="category" label="商品分类"></el-table-column>
           <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
           <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>          
-          <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>
+          <el-table-column prop="marketPrice" label="保质期(月)"></el-table-column>
           <el-table-column prop="stockCount" label="库存"></el-table-column>
-          <el-table-column prop="commodityWeight" label="重量"></el-table-column>
+          <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>
           <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
           <el-table-column label="操作" width='180px'>
             <template slot-scope="scope">
@@ -174,7 +174,7 @@ export default {
     //删除
     handleDelete(id) {
       //提示用户 是否进行此操作
-      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

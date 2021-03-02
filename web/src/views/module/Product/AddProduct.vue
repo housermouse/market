@@ -40,7 +40,6 @@
                 v-model="productAddTable.barCode"
                 style="width:200px;margin-right:20px"
                 size="small"
-                readonly="readonly"
               ></el-input>
               <el-button size="small" type="success" @click="SetBarCode(100000000,999999999)">生成条形码</el-button>
             </el-form-item>
@@ -75,14 +74,14 @@
               <span style="margin-left:10px">元</span>
             </el-form-item>
 
-            <el-form-item label="市场价" prop="marketPrice">
+            <el-form-item label="保质期" prop="marketPrice">
               <el-input
                 type="text"
                 v-model="productAddTable.marketPrice"
                 style="width:180px"
                 size="small"
               ></el-input>
-              <span style="margin-left:10px">元</span>
+              <span style="margin-left:10px">月</span>
               <!-- <p>默认市场价为售价的1.2倍</p> -->
             </el-form-item>
           </div>
@@ -97,13 +96,12 @@
              <!--  <p>计重商品单位为千克</p> -->
             </el-form-item>
 
-            <el-form-item label="商品重量" prop="commodityWeight">
+            <el-form-item label="商品产地" prop="commodityWeight">
               <el-input
                 type="text"
                 v-model="productAddTable.commodityWeight"
                 style="width:180px"
                 size="small"
-                placeholder="单位：克"
               ></el-input>
             </el-form-item>
 
@@ -115,20 +113,30 @@
                 size="small"
               ></el-input>
             </el-form-item>
+              <el-form-item label="生产日期" prop="birthDay">
+                <el-date-picker
+                    type="date"
+                    v-model="productAddTable.birthDay"
+                    style="width:180px"
+                    value-format="yyyy-MM-dd"
+                    size="small"
+                ></el-date-picker>
+                <!--  <p>计重商品单位为千克</p> -->
+              </el-form-item>
 
-            <el-form-item label="会员优惠">
-              <el-radio v-model="productAddTable.vipDiscount" label="享受" value='1'>享受</el-radio>
-              <el-radio v-model="productAddTable.vipDiscount" label="不享受" value='2'>不享受</el-radio>
-            </el-form-item>
+<!--            <el-form-item label="会员优惠">-->
+<!--              <el-radio v-model="productAddTable.vipDiscount" label="享受" value='1'>享受</el-radio>-->
+<!--              <el-radio v-model="productAddTable.vipDiscount" label="不享受" value='2'>不享受</el-radio>-->
+<!--            </el-form-item>-->
 
-            <el-form-item label="是否促销">
-              <el-radio v-model="productAddTable.promotion" label="促销" value='1'>促销</el-radio>
-              <el-radio v-model="productAddTable.promotion" label="不促销" value='2'>不促销</el-radio>
-            </el-form-item>
+<!--            <el-form-item label="是否促销">-->
+<!--              <el-radio v-model="productAddTable.promotion" label="促销" value='1'>促销</el-radio>-->
+<!--              <el-radio v-model="productAddTable.promotion" label="不促销" value='2'>不促销</el-radio>-->
+<!--            </el-form-item>-->
 
-            <el-form-item label="活动形式" prop="goodsDesc">
-              <el-input type="textarea" v-model="productAddTable.goodsDesc"></el-input>
-            </el-form-item>
+<!--            <el-form-item label="活动形式" prop="goodsDesc">-->
+<!--              <el-input type="textarea" v-model="productAddTable.goodsDesc"></el-input>-->
+<!--            </el-form-item>-->
 
             <el-form-item>
               <el-button type="primary" @click="productAdd()">添加</el-button>
@@ -154,6 +162,7 @@ export default {
         stockPrice: "", //商品进价
         stockCount: "", //入库数量
         commodityWeight: "", //商品重量
+        birthDay:"",//生产日期
         commodityUnit: "", //商品单位
         vipDiscount: "", //会员优惠
         promotion: "", //是否促销
@@ -173,7 +182,7 @@ export default {
           { required: true, message: "请输入商品售价(数字)", trigger: "blur" }
         ],
         marketPrice: [
-          { required: true, message: "请输入商品市场价(数字)", trigger: "blur" }
+          { required: true, message: "请输入保质期（月）", trigger: "blur" }
         ],
         stockPrice: [
           { required: true, message: "请输入商品进价(数字)", trigger: "blur" }
@@ -182,14 +191,16 @@ export default {
           { required: true, message: "请输入商品数量(数字)", trigger: "blur" }
         ],
         commodityWeight: [
-          { required: true, message: "请输入商品重量(数字)", trigger: "blur" }
+          { required: true, message: "请输入商品产地", trigger: "blur" }
         ],
         commodityUnit: [
           { required: true, message: "请输入商品单位", trigger: "blur" }
         ],
         goodsDesc: [
           { required: true, message: "请输入商品简介", trigger: "blur" }
-        ]
+        ],birthDay: [
+          { required: true, message: "请选择生产日期", trigger: "blur" }
+        ],
       }
     };
   },
@@ -236,9 +247,9 @@ export default {
       this.productAddTable.salePrice = parseFloat(
         (this.productAddTable.stockPrice * 1.5).toFixed(2)
       );
-      this.productAddTable.marketPrice = parseFloat(
-        (this.productAddTable.stockPrice * 2).toFixed(2)
-      );
+      // this.productAddTable.marketPrice = parseFloat(
+      //   (this.productAddTable.stockPrice * 2).toFixed(2)
+      // );
     }
   }
 };
