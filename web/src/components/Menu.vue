@@ -111,11 +111,10 @@ export default {
         }, {
           index: "6",
           cls: "el-icon-user",
-          title: "顾客管理",
+          title: "历史订单",
           roles:[1], // 超级管理员
           children: [
-            { index: "/home/customer", name: "顾客管理" },
-            { index: "/home/addcustomer", name: "添加顾客" }
+            { index: "/home/history", name: "历史订单管理" },
           ]
         },
         // {

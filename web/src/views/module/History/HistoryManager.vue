@@ -2,7 +2,7 @@
     <div class="product" style="min-width:1100px">
         <el-card class="box-card" >
             <div slot="header" class="clearfix">
-                <h3>顾客管理</h3>
+                <h3>历史订单管理</h3>
             </div>
             <div class="text item">
                 <!-- 表单 -->
@@ -47,25 +47,24 @@
                         style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;"
 
                 >
-                    <!--table的属性 @selection-change="handleSelectionChange" -->
-                    <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column prop="barCode" label="条形码"></el-table-column>
-                    <el-table-column prop="name" label="商品名称"></el-table-column>
-                    <el-table-column prop="category" label="商品分类"></el-table-column>
-                    <el-table-column prop="salePrice" label="售价(元)"></el-table-column>
-                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>
-                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>
-                    <el-table-column prop="stockCount" label="库存"></el-table-column>
-                    <el-table-column prop="commodityWeight" label="重量"></el-table-column>
-                    <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
-                    <el-table-column label="操作" width='180px'>
-                        <template slot-scope="scope">
-                            <el-button size="mini"  @click="handleEdit(scope.row)">
-                                <i class="el-icon-edit"></i>编辑</el-button>
-                            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">
-                                <i class="el-icon-delete"></i>删除</el-button>
-                        </template>
-                    </el-table-column>
+                  <!--table的属性 @selection-change="handleSelectionChange" -->
+                  <!--                    <el-table-column prop="barCode" label="条形码"></el-table-column>-->
+                  <el-table-column prop="name" label="商品名称"></el-table-column>
+                  <el-table-column prop="category" label="商品分类"></el-table-column>
+                  <el-table-column prop="salePrice" label="商品(元)"></el-table-column>
+                  <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
+                  <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
+                  <el-table-column prop="stockCount" label="数量"></el-table-column>
+                  <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>
+                  <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
+<!--                  <el-table-column label="操作" width='180px'>-->
+<!--                    <template slot-scope="scope">-->
+<!--                      &lt;!&ndash;                            <el-button size="mini"  @click="handleEdit(scope.row)">&ndash;&gt;-->
+<!--                      &lt;!&ndash;                                <i class="el-icon-edit"></i>编辑</el-button>&ndash;&gt;-->
+<!--                      <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">-->
+<!--                        <i class="el-icon-delete"></i>删除</el-button>-->
+<!--                    </template>-->
+<!--                    </el-table-column>-->
                 </el-table>
 
                 <el-pagination
@@ -79,11 +78,11 @@
                         :total="total"
                 ></el-pagination>
 
-                <!-- 按钮 -->
-                <div style="margin-top:20px">
-                    <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>
-                    <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>
-                </div>
+<!--                &lt;!&ndash; 按钮 &ndash;&gt;-->
+<!--                <div style="margin-top:20px">-->
+<!--                    <el-button type="danger" size="mini" @click="batchdel">批量删除</el-button>-->
+<!--                    <el-button type="primary" size="mini" @click="deselect">取消选择</el-button>-->
+<!--                </div>-->
             </div>
         </el-card>
 
@@ -119,7 +118,13 @@
 
 <script>
 
-    import { getProductList,productDelete,updateProduct,getProductDataByPage,batchdelProduct} from "@/api/apis.js";
+import {
+  getHistoryList,
+  productDelete,
+  updateProduct,
+  getClearDatatByPage,
+  batchdelProduct, getLoginUsername,
+} from "@/api/apis.js";
 
     export default {
         data() {
@@ -129,7 +134,7 @@
                     searchKey: ""
                 },
                 tableData:[],
-
+                name:'',
                 editForm: {
                     id: "",
                     name: "",
@@ -155,8 +160,7 @@
 
             //渲染页面
             getProductList(){
-                // 发送请求加载数据
-                getProductList().then(data => {
+              getHistoryList().then(data => {
                     // 把结果更新到数据对象,由双向绑定完成页面更新
                     this.tableData = data;
                 });
@@ -165,7 +169,7 @@
             //查询用户
             doSearch(){
                 const _this= this;
-                getProductList(this.searchForm)
+              getHistoryList(this.searchForm,_this.name)
                     .then(data =>{
                         _this.tableData = data;
                     })
@@ -243,10 +247,10 @@
 
             // 分页
             ajaxgetListProduct() {
-                getProductDataByPage(this.currentPage, this.pageSize).then(res => {
-                    this.tableData = res.data.data;
-                    this.total = res.data.total;
-                });
+              getClearDatatByPage(this.currentPage, this.pageSize,"1").then(res => {
+                this.tableData = res.data.data;
+                this.total = res.data.total;
+              });
             },
 
             handleSizeChange(pageSize) {
@@ -325,7 +329,19 @@
         },
         //页面加载时候调用一次渲染
         mounted() {
-            this.ajaxgetListProduct(this.currentPage);
+          const token = localStorage.getItem('token');
+          const _this = this;
+          getLoginUsername(token)
+              .then((result)=>{
+
+                // 成功
+                if(result.success){
+                  _this.name = result.name
+                }else{
+                  // 失败提示,跳转登录
+                }
+              })
+            // this.ajaxgetListProduct(this.currentPage);
         }
     };
 </script>

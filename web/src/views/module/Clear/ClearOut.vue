@@ -121,7 +121,15 @@
 
 <script>
 
-    import { getCleartList,clearDelete,updateProduct,getClearDatatByPage,batchdelClear} from "@/api/apis.js";
+import {
+  getCleartList,
+  clearDelete,
+  updateProduct,
+  getClearDatatByPage,
+  batchdelClear,
+  getLoginUsername,
+  clearOutProduct
+} from "@/api/apis.js";
     import * as printJS from "print-js";
 
     export default {
@@ -132,7 +140,7 @@
                     searchKey: ""
                 },
                 tableData:[],
-
+                name:'',
                 editForm: {
                     id: "",
                     name: "",
@@ -257,10 +265,18 @@
                       }
                     ],
                     type: 'json',
-                    header: '标题',
+                    header: '出库商品单',
                     // 样式设置
                     gridStyle: 'border: 2px solid #3971A5;',
                     gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'
+                  })
+                  clearOutProduct(_this.name).then(resultData =>{
+                    // eslint-disable-next-line no-console
+                    console.log(resultData);
+                    getClearDatatByPage(this.currentPage, this.pageSize).then(res => {
+                      this.tableData = res.data.data;
+                      this.total = res.data.total;
+                    });
                   })
                 })
           },
@@ -385,7 +401,19 @@
         },
         //页面加载时候调用一次渲染
         mounted() {
-            this.ajaxgetListProduct(this.currentPage);
+          const token = localStorage.getItem('token');
+          const _this = this;
+          getLoginUsername(token)
+          .then((result)=>{
+
+            // 成功
+            if(result.success){
+              _this.name = result.name
+            }else{
+              // 失败提示,跳转登录
+            }
+          })
+            // this.ajaxgetListProduct(this.currentPage);
         }
     };
 </script>

@@ -115,17 +115,11 @@ const router = new VueRouter({
 
           component: () => import('./views/module/Clear/ClearBack.vue')
         },{
-          path: '/home/customer',
-          name: 'customer',
+          path: '/home/history',
+          name: 'history',
           meta: { requiresAuth: true },
 
-          component: () => import('./views/module/Customer/Customer.vue')
-        },{
-          path: '/home/addcustomer',
-          name: 'addcustomer',
-          meta: { requiresAuth: true },
-
-          component: () => import('./views/module/Customer/AddCustomer.vue')
+          component: () => import('./views/module/History/HistoryManager.vue')
         }
       ]
     }

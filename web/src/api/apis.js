@@ -317,7 +317,6 @@
         // 1 商品列表
         export const getCleartList = (barCode,name) => {
             // eslint-disable-next-line no-console
-        console.log(barCode)
             return axiosInstance
                 .post('/clear/getClearList', {barCode:barCode,name})
                 .then(({ data }) => {
@@ -326,11 +325,12 @@
         }
 
         // 5 用户分页
-        export const getClearDatatByPage=(currentPage,pageSize)=>{
+        export const getClearDatatByPage=(currentPage,pageSize,saled)=>{
             return  axiosInstance.get("/clear/getdatabypage", {
                 params:{
                     currentPage,
-                    pageSize
+                    pageSize,
+                    saled
                 }
             })
         }
@@ -349,4 +349,22 @@
         // 6 批量删除用户
         export const batchdelClear=(IdArr)=>{
             return axiosInstance.get("/clear/batchdel" , {params:{IdArr}})
+        }
+
+        export const clearOutProduct=(name)=>{
+            // eslint-disable-next-line no-console
+            return axiosInstance.post("/clear/clearOut" ,  {name})
+        }
+
+// ---------------------------------------------------------------------------------------
+        // 2 获取历史列表
+        export const getHistoryList=(searchObj,name)=>{
+            searchObj.name = name;
+            // eslint-disable-next-line no-console
+        console.log(searchObj);
+            return axiosInstance
+                .post('/clear/getHistoryList',searchObj)
+                .then(({ data }) => {
+                    return data // 直接返回数据对象
+                })
         }
