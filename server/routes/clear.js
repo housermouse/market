@@ -66,10 +66,10 @@ function getSql(barCode, customer, id, saled) {
 //渲染列表
 router.post('/getClearList', function (req, resp) {
     // 1. 准备
-    const {barCode, name} = req.body;
+    const {barCode, name,saled} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
-    connection.query(getSql(barCode, name, "", "0"), function (error, data) {
+    connection.query(getSql(barCode, name, "", saled), function (error, data) {
         if (error) throw error;
         // 3. 结果
         resp.send(data);

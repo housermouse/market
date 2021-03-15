@@ -315,10 +315,10 @@
 
 
         // 1 商品列表
-        export const getCleartList = (barCode,name) => {
+        export const getCleartList = (barCode,name,saled) => {
             // eslint-disable-next-line no-console
             return axiosInstance
-                .post('/clear/getClearList', {barCode:barCode,name})
+                .post('/clear/getClearList', {barCode:barCode,name,saled})
                 .then(({ data }) => {
                     return data // 直接返回数据对象
                 })
@@ -361,7 +361,6 @@
         export const getHistoryList=(searchObj,name)=>{
             searchObj.name = name;
             // eslint-disable-next-line no-console
-        console.log(searchObj);
             return axiosInstance
                 .post('/clear/getHistoryList',searchObj)
                 .then(({ data }) => {

@@ -7,34 +7,35 @@
             <div class="text item">
                 <!-- 表单 -->
                 <el-form :inline="true" :model="searchForm">
-                    <el-form-item>
-                        <el-select style="width:150px"
-                                   v-model="searchForm.category"
-                                   placeholder="== 选择分类 =="
-                                   size="small"
-                        >
-                            <el-option label="全部分类" value=""></el-option>
-                            <el-option label="饮品" value="饮品"></el-option>
-                            <el-option label="食品类" value="食品类"></el-option>
-                            <el-option label="香烟" value="香烟"></el-option>
-                            <el-option label="酒类" value="酒类"></el-option>
-                            <el-option label="干货类" value="干货类"></el-option>
-                            <el-option label="果蔬/生鲜" value="果蔬/生鲜"></el-option>
-                            <el-option label="调味品" value="调味品"></el-option>
-                            <el-option label="百货类" value="百货类"></el-option>
-                            <el-option label="日用品" value="日用品"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="关键字：">
-                        <el-input
-                                style="width:200px"
-                                v-model="searchForm.searchKey"
-                                placeholder="(商品名称，条形码)"
-                                size="small"
-                        ></el-input>
-                    </el-form-item>
+<!--                    <el-form-item>-->
+<!--                        <el-select style="width:150px"-->
+<!--                                   v-model="searchForm.category"-->
+<!--                                   placeholder="== 选择分类 =="-->
+<!--                                   size="small"-->
+<!--                        >-->
+<!--                            <el-option label="全部分类" value=""></el-option>-->
+<!--                            <el-option label="饮品" value="饮品"></el-option>-->
+<!--                            <el-option label="食品类" value="食品类"></el-option>-->
+<!--                            <el-option label="香烟" value="香烟"></el-option>-->
+<!--                            <el-option label="酒类" value="酒类"></el-option>-->
+<!--                            <el-option label="干货类" value="干货类"></el-option>-->
+<!--                            <el-option label="果蔬/生鲜" value="果蔬/生鲜"></el-option>-->
+<!--                            <el-option label="调味品" value="调味品"></el-option>-->
+<!--                            <el-option label="百货类" value="百货类"></el-option>-->
+<!--                            <el-option label="日用品" value="日用品"></el-option>-->
+<!--                        </el-select>-->
+<!--                    </el-form-item>-->
+<!--                    <el-form-item label="关键字：">-->
+<!--                        <el-input-->
+<!--                                style="width:200px"-->
+<!--                                v-model="searchForm.searchKey"-->
+<!--                                placeholder="(商品名称，条形码)"-->
+<!--                                size="small"-->
+<!--                        ></el-input>-->
+<!--                    </el-form-item>-->
                     <el-form-item>
                         <el-button type="primary" size="small" @click="doSearch">查询</el-button>
+                      <el-button type="primary" size="small" @click="batchclear">全部打印</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 表格 -->
@@ -123,8 +124,9 @@ import {
   productDelete,
   updateProduct,
   getClearDatatByPage,
-  batchdelProduct, getLoginUsername,
+  batchdelProduct, getLoginUsername, getCleartList,
 } from "@/api/apis.js";
+import * as printJS from "print-js";
 
     export default {
         data() {
@@ -159,8 +161,8 @@ import {
         methods: {
 
             //渲染页面
-            getProductList(){
-              getHistoryList().then(data => {
+            getHistoryList(searchForm,name){
+              getHistoryList({},name).then(data => {
                     // 把结果更新到数据对象,由双向绑定完成页面更新
                     this.tableData = data;
                 });
@@ -197,7 +199,7 @@ import {
                                         message: reason
                                     });
                                     //重新刷新页面 -- 再次请求数据
-                                    this.getProductList();
+                                    this.getHistoryList("",name);
                                 }
                                 else if (code === 1) {
                                     //失败
@@ -224,7 +226,7 @@ import {
                                 // 先隐藏对话框
                                 _this.dialogFormVisible = false;
                                 // 刷新页面
-                                _this.getProductList();
+                                _this.getHistoryList("",name);
                             }
                         });
                     } else {
@@ -271,6 +273,64 @@ import {
                 // eslint-disable-next-line no-console
                 this.IdArr = data.map(v => v.id); //取出所有数据的id们
             },
+          batchclear(){
+            const _this= this;
+            getCleartList(this.searchForm.barCode,_this.name,"1")
+              .then(resultData => {
+                this.list = resultData || [];
+                let data = []
+                for (let i = 0; i < this.list.length; i++) {
+                  data.push({
+                    name: this.list[i].name,
+                    category: this.list[i].category,
+                    salePrice: this.list[i].salePrice,
+                    stockCount: this.list[i].stockCount,
+                    commodityWeight: this.list[i].commodityWeight,
+                    commodityUnit: this.list[i].commodityUnit,
+                  })
+                }
+                printJS({
+                  printable: data,
+                  properties: [
+                    {
+                      field: 'name',
+                      displayName: '商品名称',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'category',
+                      displayName: '商品分类',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'salePrice',
+                      displayName: '售价',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'stockCount',
+                      displayName: '数量',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'commodityWeight',
+                      displayName: '商品产地',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'commodityUnit',
+                      displayName: '单位',
+                      columnSize: 1
+                    }
+                  ],
+                  type: 'json',
+                  header: '出库商品单',
+                  // 样式设置
+                  gridStyle: 'border: 2px solid #3971A5;',
+                  gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'
+                })
+              })
+          },
 
             batchdel() {
                 //批量删除
@@ -336,7 +396,8 @@ import {
 
                 // 成功
                 if(result.success){
-                  _this.name = result.name
+                  _this.name = result.name;
+                  _this.getHistoryList("",result.name);
                 }else{
                   // 失败提示,跳转登录
                 }

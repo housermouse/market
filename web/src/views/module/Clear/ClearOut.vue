@@ -164,9 +164,9 @@ import {
         methods: {
 
             //渲染页面
-          getCleartList(){
+          getCleartList(barCode,name,saled){
                 // 发送请求加载数据
-            getCleartList().then(data => {
+            getCleartList(barCode,name,saled).then(data => {
                     // 把结果更新到数据对象,由双向绑定完成页面更新
                     this.tableData = data;
                 });
@@ -175,7 +175,7 @@ import {
             //查询用户
             doSearch(){
                 const _this= this;
-              getCleartList(this.searchForm.barCode,_this.name)
+              getCleartList(this.searchForm.barCode,_this.name,"0")
                     .then(data =>{
                         _this.tableData = data;
                     })
@@ -203,7 +203,7 @@ import {
                                         message: reason
                                     });
                                     //重新刷新页面 -- 再次请求数据
-                                    this.getCleartList();
+                                    this.getCleartList("",this.name,"0");
                                 }
                                 else if (code === 1) {
                                     //失败
@@ -216,7 +216,7 @@ import {
             },
           batchclear(){
             const _this= this;
-            getCleartList(this.searchForm.barCode,_this.name)
+            getCleartList(this.searchForm.barCode,_this.name,"0")
                 .then(resultData =>{
                   this.list = resultData || [];
                   let data = []
@@ -296,7 +296,7 @@ import {
                                 // 先隐藏对话框
                                 _this.dialogFormVisible = false;
                                 // 刷新页面
-                                _this.getCleartList();
+                                _this.getCleartList("",_this.name,"0");
                             }
                         });
                     } else {
@@ -408,7 +408,8 @@ import {
 
             // 成功
             if(result.success){
-              _this.name = result.name
+              _this.name = result.name;
+              _this.getCleartList("",result.name,"0")
             }else{
               // 失败提示,跳转登录
             }
