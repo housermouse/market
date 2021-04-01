@@ -109,4 +109,4 @@ CREATE TABLE `t_commodity` (
 		获取数据条数：
 			SELECT COUNT(*) FROM table_name
 
-借鉴至 https://github.com/yaojwen/1.git
+借鉴至 

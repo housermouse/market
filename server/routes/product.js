@@ -27,14 +27,12 @@ function getSql(category, searchKey){
       first=false
     }
     if(searchKey){
-        if(first){ // 第一个条件
-          sql+= ` WHERE name like '${searchKey}%' or barCode like '${searchKey}%'`
-        }else{// 不是第一个条件
-          sql+= ` AND name like '${searchKey}%' or barCode like '${searchKey}%'`
-        }
-    
-        first=false
+      if(first){ // 第一个条件
+        sql+= ` WHERE name like '${searchKey}%' or barCode like '${searchKey}%'`
+      }else{// 不是第一个条件
+        sql+= ` AND name like '${searchKey}%' or barCode like '${searchKey}%'`
       }
+    }
   
     // 3.结果
     return sql;
@@ -175,15 +173,15 @@ router.get("/batchdel" , (req,res) => {
 
   //接收请求参数
   let {IdArr} = req.query; //IdArr是个数组
-    console.log(IdArr);
+
   //准备sql
   let sqlStr = `DELETE FROM t_commodity WHERE id IN (${IdArr})`;
-
+    console.log(sqlStr);
   //执行sql
   connection.query(sqlStr , (err,data) => {
     if(err) throw err;
     // res.send(sqlStr)
-    if(data.affectedRows ===1 ){
+    if(data.affectedRows >1 ){
          res.send({code:0,reason:"删除商品成功"})
     }else{
          res.send({code:1,reason:"删除商品失败"})
