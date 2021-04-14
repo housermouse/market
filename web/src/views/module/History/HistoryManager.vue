@@ -50,14 +50,14 @@
                 >
                   <!--table的属性 @selection-change="handleSelectionChange" -->
                   <!--                    <el-table-column prop="barCode" label="条形码"></el-table-column>-->
-                  <el-table-column prop="name" label="商品名称"></el-table-column>
-                  <el-table-column prop="category" label="商品分类"></el-table-column>
-                  <el-table-column prop="salePrice" label="商品(元)"></el-table-column>
+                  <el-table-column prop="saledId" label="订单号"></el-table-column>
+<!--                  <el-table-column prop="category" label="商品分类"></el-table-column>-->
+<!--                  <el-table-column prop="salePrice" label="商品(元)"></el-table-column>-->
                   <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
                   <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
-                  <el-table-column prop="stockCount" label="数量"></el-table-column>
-                  <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>
-                  <el-table-column prop="commodityUnit" label="单位(克)"></el-table-column>
+<!--                  <el-table-column prop="stockCount" label="数量"></el-table-column>-->
+<!--                  <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>-->
+                  <el-table-column prop="saleTime" label="下单时间"></el-table-column>
 <!--                  <el-table-column label="操作" width='180px'>-->
 <!--                    <template slot-scope="scope">-->
 <!--                      &lt;!&ndash;                            <el-button size="mini"  @click="handleEdit(scope.row)">&ndash;&gt;-->
@@ -92,21 +92,21 @@
         <el-dialog title="修改" :visible.sync="dialogFormVisible">
             <el-form :model="editForm">
                 <!-- 用户名 -->
-                <el-form-item label="产品名">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                <el-form-item label="订单号">
+                    <el-input v-model="editForm.saledId" auto-complete="off"></el-input>
                 </el-form-item>
                 <!-- 售价 -->
                 <el-form-item label="售价">
-                    <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.saleTime" auto-complete="off"></el-input>
                 </el-form-item>
                 <!-- 市场价 -->
-                <el-form-item label="市场价">
-                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 进价 -->
-                <el-form-item label="进价">
-                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>
-                </el-form-item>
+<!--                <el-form-item label="市场价">-->
+<!--                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
+<!--                &lt;!&ndash; 进价 &ndash;&gt;-->
+<!--                <el-form-item label="进价">-->
+<!--                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -138,11 +138,8 @@ import * as printJS from "print-js";
                 tableData:[],
                 name:'',
                 editForm: {
-                    id: "",
-                    name: "",
-                    salePrice: "",
-                    marketPrice: "",
-                    stockPrice: "",
+                    birthDay:'',
+                    saleTime:''
                 },
 
                 // dialog对话框的默认显示状态

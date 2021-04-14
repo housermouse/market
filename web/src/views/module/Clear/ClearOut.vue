@@ -35,7 +35,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" size="small" @click="doSearch">查询</el-button>
-                      <el-button type="primary" size="small" @click="batchclear">全部出库</el-button>
+                      <el-button type="primary" size="small" @click="handleEdit">全部出库</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 表格 -->
@@ -93,26 +93,26 @@
         <!-- 修改弹窗 -->
         <el-dialog title="修改" :visible.sync="dialogFormVisible">
             <el-form :model="editForm">
-                <!-- 用户名 -->
-                <el-form-item label="产品名">
+<!--                &lt;!&ndash; 用户名 &ndash;&gt;-->
+                <el-form-item label="请输入客户姓名">
                     <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <!-- 售价 -->
-                <el-form-item label="售价">
-                    <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 市场价 -->
-                <el-form-item label="市场价">
-                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 进价 -->
-                <el-form-item label="进价">
-                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>
-                </el-form-item>
+<!--                &lt;!&ndash; 售价 &ndash;&gt;-->
+<!--                <el-form-item label="售价">-->
+<!--                    <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
+<!--                &lt;!&ndash; 市场价 &ndash;&gt;-->
+<!--                <el-form-item label="市场价">-->
+<!--                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
+<!--                &lt;!&ndash; 进价 &ndash;&gt;-->
+<!--                <el-form-item label="进价">-->
+<!--                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>-->
+<!--                </el-form-item>-->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateProduct">更 新</el-button>
+                <el-button type="primary" @click="batchclear(editForm.name)">打 印 </el-button>
             </div>
         </el-dialog>
     </div>
@@ -214,7 +214,7 @@ import {
                     .catch(() => {
                     });
             },
-          batchclear(){
+          batchclear(customer){
             const _this= this;
             getCleartList(this.searchForm.barCode,_this.name,"0")
                 .then(resultData =>{
@@ -228,9 +228,12 @@ import {
                       stockCount: this.list[i].stockCount,
                       commodityWeight: this.list[i].commodityWeight,
                       commodityUnit: this.list[i].commodityUnit,
+                      marketPrice: this.list[i].marketPrice+'天',
+                      birthDay: this.list[i].birthDay===null?this.list[i].birthDay:'-',
                     })
                   }
                   printJS({
+                    documentTitle:'华联超市管理系统',
                     printable: data,
                     properties: [
                       {
@@ -262,10 +265,21 @@ import {
                         field: 'commodityUnit',
                         displayName: '单位',
                         columnSize: 1
+                      },
+                      {
+                        field: 'marketPrice',
+                        displayName: '保质期',
+                        columnSize: 1
+                      },
+                      {
+                        field: 'birthDay',
+                        displayName: '生产日期',
+                        columnSize: 1
                       }
                     ],
                     type: 'json',
-                    header: '出库商品单',
+                    header: '店铺联系电话：1234567890 地址：福建省福州市闽侯县xxx号铺'+'--------------------------------------客户姓名：'+customer,
+                    headerStyle:'font-size:12px;',
                     // 样式设置
                     gridStyle: 'border: 2px solid #3971A5;',
                     gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'
@@ -310,11 +324,11 @@ import {
             },
 
 
-            handleEdit(row) {
+            handleEdit() {
                 // 显示对话框
                 this.dialogFormVisible = true;
                 // 手动把行数据,更新form对象上即可
-                this.editForm = row;
+                // this.editForm = row;
             },
 
             // 分页

@@ -1,17 +1,28 @@
 /*
 	商品模块路由
 */
+
 var express = require('express');
 var router = express.Router();
 
 // 引入数据库连接模块
 const connection = require('../db/mysqlConn')
 
+function getUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 // SQL拼装函数
-function getSql(barCode, customer, id, saled) {
+function getSql(barCode, customer, id, saled,changesql) {
     // 1.准备
     let sql = 'SELECT id,category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,customer FROM t_shopping_cart';
+    if(changesql){
+        sql = 'SELECT saledId,saleTime from t_shopping_cart';
+    }
     // 是否是第一个条件的标志
     let first = true;
 
@@ -127,8 +138,8 @@ router.post('/clearProduct', (req, resp) => {
                     }
                 })
             } else {
-                const addSql = `INSERT INTO t_shopping_cart(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,customer,saled) 
-                VALUES('${data.category}','${data.barCode}','${data.name}',${data.salePrice},${data.marketPrice},${data.stockPrice},${data.buyCount},'${data.commodityWeight}','${data.commodityUnit}','${data.vipDiscount}','${data.promotion}','${data.goodsDesc}','${name}','0')`
+                const addSql = `INSERT INTO t_shopping_cart(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,customer,saled,birthDay) 
+                VALUES('${data.category}','${data.barCode}','${data.name}',${data.salePrice},${data.marketPrice},${data.stockPrice},${data.buyCount},'${data.commodityWeight}','${data.commodityUnit}','${data.vipDiscount}','${data.promotion}','${data.goodsDesc}','${name}','0','${(data.birthDay)}')`
                 connection.query(addSql, (err, result) => {
                     if (err) throw err;
 
@@ -299,7 +310,9 @@ router.post('/getHistoryList', function (req, resp) {
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     console.log(req.body)
-    connection.query(getSql(barCode, name, "", "1"), function (error, data) {
+    let sql = getSql(barCode, name, '','1',true)+' group by saledId,saleTime';
+    console.log(sql)
+    connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果
         resp.send(data);
@@ -312,8 +325,10 @@ router.post('/clearOut', function (req, resp) {
     const {name} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
+    const uuid = getUUID();
+    const saleTime = new Date().getTime();
     console.log(req.body);
-    let sql = `update t_shopping_cart set saled = '1' where customer = '${name}' and saled = '0'`
+    let sql = `update t_shopping_cart set saled = '1',saledId='${uuid}',saleTime='${saleTime}' where customer = '${name}' and saled = '0'`
     connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果

@@ -116,9 +116,10 @@ router.post('/productAdd', (req, resp) => {
            message:"产品已重复,请重新输入"
         })
         } else { // 新用户名可用
-           console.log(birthDay);
+           const shopDay = new Date(birthDay);
+           console.log(shopDay.getTime());
             // 2.2 用户添加第二步：  用户的添加
-            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,birthDay) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}','${(birthDay)}')`
+            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,birthDay) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}','${(shopDay.getTime())}')`
 			console.log(addSql);
             connection.query(addSql, (err, result) => {
                 if (err) throw err;
