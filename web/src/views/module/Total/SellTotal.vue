@@ -5,28 +5,28 @@
                 <h3>销售数据统计</h3>
             </div>
             <div class="text item">
-                <el-form 
+                <el-form
                     :inline="true"
-                    :model="SellTotalForm" 
+                    :model="SellTotalForm"
                     size="small"
                     style="width:700px"
                     >
                         <el-form-item label="时间">
-                            
-                            <el-date-picker 
-                            type="date" 
+
+                            <el-date-picker
+                            type="date"
                             placeholder="选择日期"
-                            v-model="SellTotalForm.date1" 
+                            v-model="SellTotalForm.date1"
                             style="width: 150px"
                             ></el-date-picker>c vv
-                        
+
                             <span>&emsp;&emsp;</span>
 
-                            <el-date-picker 
-                            placeholder="选择时间" 
-                            v-model="SellTotalForm.date2" 
+                            <el-date-picker
+                            placeholder="选择时间"
+                            v-model="SellTotalForm.date2"
                             style="width: 150px"></el-date-picker>&emsp;
-                        
+
                         </el-form-item>
                         <el-form-item>
                             <el-select v-model="SellTotalForm.region" placeholder="销售情况统计">

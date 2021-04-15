@@ -6,35 +6,35 @@
                 
             </div>
             <div class="text item">
-                <el-form 
-                 :inline="true" 
-                 :model="StockTotalform" 
-                 >
-                     <el-form-item label="时间">
-                        
-                        <el-form-item>
-                            <el-date-picker 
-                            type="date" 
-                            placeholder="选择日期" 
-                            v-model="StockTotalform.date1" 
-                            style="width: 200px"></el-date-picker>
-                        </el-form-item>
-                        
-                        <el-form-item>&emsp;&emsp;</el-form-item>
+<!--                <el-form -->
+<!--                 :inline="true" -->
+<!--                 :model="StockTotalform" -->
+<!--                 >-->
+<!--                     <el-form-item label="时间">-->
+<!--                        -->
+<!--                        <el-form-item>-->
+<!--                            <el-date-picker -->
+<!--                            type="date" -->
+<!--                            placeholder="选择日期" -->
+<!--                            v-model="StockTotalform.date1" -->
+<!--                            style="width: 200px"></el-date-picker>-->
+<!--                        </el-form-item>-->
+<!--                        -->
+<!--                        <el-form-item>&emsp;&emsp;</el-form-item>-->
 
-                         <el-form-item>
-                            <el-date-picker 
-                            type="date" 
-                            placeholder="选择日期" 
-                            v-model="StockTotalform.date2" 
-                            style="width: 200px"></el-date-picker>
-                        </el-form-item>&emsp;
-                    </el-form-item>
-                    
-                    <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
-                    </el-form-item>
-               </el-form>
+<!--                         <el-form-item>-->
+<!--                            <el-date-picker -->
+<!--                            type="date" -->
+<!--                            placeholder="选择日期" -->
+<!--                            v-model="StockTotalform.date2" -->
+<!--                            style="width: 200px"></el-date-picker>-->
+<!--                        </el-form-item>&emsp;-->
+<!--                    </el-form-item>-->
+<!--                    -->
+<!--                    <el-form-item>-->
+<!--                        <el-button type="primary" @click="onSubmit">查询</el-button>-->
+<!--                    </el-form-item>-->
+<!--               </el-form>-->
                <div id="stockcharts" style="height:400px;"></div>
             </div>
         </el-card>
@@ -53,34 +53,36 @@
             }
         },
         mounted(){
-             this.StockTotal();
+             this.onSubmit();
         },
         methods : {
             onSubmit(){
-      
+
+              var option = {
+                title: {
+                  text: '进货统计',
+                  left:"center"
+                },
+                xAxis: {
+                  type: 'category',
+                  data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+                },
+                yAxis: {
+                  type: 'value'
+                },
+                series: [{
+                  data: [820, 932, 901, 934, 1290, 1330, 1320],
+                  type: 'line'
+                }]
+              };
+              this.StockTotal(option);
             },
-            StockTotal(){//echarts
+            StockTotal(option){//echarts
                  // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('stockcharts'));
 
                 // 指定图表的配置项和数据
-                var option = {
-                    title: {
-                        text: '进货统计',
-                        left:"center"
-                    },
-                    xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [{
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
-                        type: 'line'
-                    }]
-                };
+
 
                 // 使用刚指定的配置项和数据显示图表。
                 myChart.setOption(option);

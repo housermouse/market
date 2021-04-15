@@ -105,7 +105,7 @@ export default {
           title: "统计管理",
           roles:[1], // 超级管理员          
           children: [
-            { index: "/home/SellTotal", name: "销售统计" },
+            // { index: "/home/SellTotal", name: "销售统计" },
             { index: "/home/StockTotal", name: "进货统计" }
           ]
         }, {
