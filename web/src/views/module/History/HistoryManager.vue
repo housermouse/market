@@ -87,22 +87,31 @@
 
 
         <!-- 修改弹窗 -->
-        <el-dialog title="历史订单" :visible.sync="dialogFormVisible">
+        <el-dialog title="历史订单" style="width: 2000px" :visible.sync="dialogFormVisible">
           <el-table
-              :data="tableData"
+              :data="saledData"
               stripe
-              ref="tableData"
+              ref="saledData"
               tooltip-effect="dark"
-              style="width: 100%;height: 300px;overflow-y: scroll;"
+              style="width: 100%;height: 350px;overflow-y: scroll;"
 
           >
             <el-table-column style="color: black;" prop="saledId" label="订单号"></el-table-column>
+            <el-table-column width="110" prop="name" label="商品名称"></el-table-column>
+            <el-table-column width="80" prop="category" label="商品分类"></el-table-column>
+            <el-table-column width="80" prop="salePrice" label="商品(元)"></el-table-column>
+            <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
+            <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
+            <el-table-column width="50" prop="stockCount" label="数量"></el-table-column>
+            <el-table-column width="80" prop="commodityWeight" label="商品产地"></el-table-column>
+            <el-table-column width="75" prop="commodityUnit" label="单位(克)"></el-table-column>
+            <el-table-column width="75" prop="customer" label="客户"></el-table-column>
             <el-table-column prop="saleTime" label="下单时间"></el-table-column>
           </el-table>
-<!--            <div slot="footer" class="dialog-footer">-->
-<!--                <el-button @click="dialogFormVisible = false">取 消</el-button>-->
-<!--                <el-button type="primary" @click="updateProduct">更 新</el-button>-->
-<!--            </div>-->
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="batchclear()">打 印</el-button>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -115,7 +124,7 @@ import {
   productDelete,
   updateProduct,
   getClearDatatByPage,
-  batchdelProduct, getLoginUsername, getCleartList,
+  batchdelProduct, getLoginUsername,
 } from "@/api/apis.js";
 import * as printJS from "print-js";
 
@@ -124,9 +133,12 @@ import * as printJS from "print-js";
             return {
                 searchForm: {
                     category: "",
-                    searchKey: ""
+                    searchKey: "",
+                    saledId:""
                 },
+                saledData:[],
                 tableData:[],
+              currentSaledId:'',
                 name:'',
                 editForm: {
                     birthDay:'',
@@ -229,10 +241,19 @@ import * as printJS from "print-js";
 
 
             handleEdit(row) {
-                // 显示对话框
-                this.dialogFormVisible = true;
+              // eslint-disable-next-line no-console
+              console.log(row.saledId);
+              const _this = this;
+              getHistoryList({saledId:row.saledId},_this.name)
+                  .then(data =>{
+                    _this.saledData = data;
+                    _this.currentSaledId = row.saledId;
+                    // 显示对话框
+                    this.dialogFormVisible = true;
+                  })
+
                 // 手动把行数据,更新form对象上即可
-                this.editForm = row;
+                // this.editForm = row;
             },
 
             // 分页
@@ -263,8 +284,10 @@ import * as printJS from "print-js";
             },
           batchclear(){
             const _this= this;
-            getCleartList(this.searchForm.barCode,_this.name,"1")
+            getHistoryList({saledId:_this.currentSaledId},_this.name)
               .then(resultData => {
+                // eslint-disable-next-line no-console
+                console.log(resultData)
                 this.list = resultData || [];
                 let data = []
                 for (let i = 0; i < this.list.length; i++) {
@@ -275,9 +298,12 @@ import * as printJS from "print-js";
                     stockCount: this.list[i].stockCount,
                     commodityWeight: this.list[i].commodityWeight,
                     commodityUnit: this.list[i].commodityUnit,
+                    marketPrice: this.list[i].marketPrice+'天',
+                    birthDay: this.list[i].birthDay===null?this.list[i].birthDay:'-',
                   })
                 }
                 printJS({
+                  documentTitle:'华联超市管理系统',
                   printable: data,
                   properties: [
                     {
@@ -309,10 +335,21 @@ import * as printJS from "print-js";
                       field: 'commodityUnit',
                       displayName: '单位',
                       columnSize: 1
+                    },
+                    {
+                      field: 'marketPrice',
+                      displayName: '保质期',
+                      columnSize: 1
+                    },
+                    {
+                      field: 'birthDay',
+                      displayName: '生产日期',
+                      columnSize: 1
                     }
                   ],
                   type: 'json',
-                  header: '出库商品单',
+                  header: '店铺联系电话：1234567890 地址：福建省福州市闽侯县xxx号铺'+'--------------------------------------客户姓名：'+this.list[0].customer,
+                  headerStyle:'font-size:12px;',
                   // 样式设置
                   gridStyle: 'border: 2px solid #3971A5;',
                   gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'

@@ -17,10 +17,10 @@ function getUUID() {
 }
 
 // SQL拼装函数
-function getSql(barCode, customer, id, saled,changesql) {
+function getSql(barCode, customer, id, saled, changesql, saledId) {
     // 1.准备
-    let sql = 'SELECT id,category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,customer FROM t_shopping_cart';
-    if(changesql){
+    let sql = 'SELECT * FROM t_shopping_cart';
+    if (changesql) {
         sql = 'SELECT saledId,saleTime from t_shopping_cart';
     }
     // 是否是第一个条件的标志
@@ -70,6 +70,17 @@ function getSql(barCode, customer, id, saled,changesql) {
         first = false
     }
 
+    // 2.执行判断
+    if (saledId && saledId != "") {
+        if (first) { // 第一个条件
+            sql += ` WHERE saledId='${saledId}'`
+        } else {// 不是第一个条件
+            sql += ` AND saledId='${saledId}'`
+        }
+
+        first = false
+    }
+
     // 3.结果
     return sql;
 }
@@ -77,7 +88,7 @@ function getSql(barCode, customer, id, saled,changesql) {
 //渲染列表
 router.post('/getClearList', function (req, resp) {
     // 1. 准备
-    const {barCode, name,saled} = req.body;
+    const {barCode, name, saled} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     connection.query(getSql(barCode, name, "", saled), function (error, data) {
@@ -95,7 +106,7 @@ router.get("/deletedata", (req, res) => {
     let {id} = req.query;
 
     //准备sql
-    let sqlStr = `delete from t_commodity where id='${id}'`;
+    let sqlStr = `delete from t_shopping_cart where id='${id}'`;
     //执行sql
     connection.query(sqlStr, (err, data) => {
         if (err) throw err;
@@ -306,15 +317,21 @@ router.get("/batchdel", (req, res) => {
 //渲染列表
 router.post('/getHistoryList', function (req, resp) {
     // 1. 准备
-    const {barCode, name} = req.body;
+    const {barCode, saledId, name} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     console.log(req.body)
-    let sql = getSql(barCode, name, '','1',true)+' group by saledId,saleTime';
-    console.log(sql)
+    let sql = '';
+    if (!saledId || saledId === '') {
+        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime'
+    } else {
+        sql = getSql(barCode, name, '', '1', false, saledId)
+    }
+
     connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果
+        console.log(data)
         resp.send(data);
     })
 });

@@ -91,7 +91,7 @@
 
 
         <!-- 修改弹窗 -->
-        <el-dialog title="修改" :visible.sync="dialogFormVisible">
+        <el-dialog title="客户信息" :visible.sync="dialogFormVisible">
             <el-form :model="editForm">
 <!--                &lt;!&ndash; 用户名 &ndash;&gt;-->
                 <el-form-item label="请输入客户姓名">
@@ -184,7 +184,7 @@ import {
             //删除
             handleDelete(id) {
                 //提示用户 是否进行此操作
-                this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+                this.$confirm("确定删除商品?", "提示", {
                     confirmButtonText: "确定",
                     cancelButtonText: "取消",
                     type: "warning"
