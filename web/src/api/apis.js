@@ -367,3 +367,31 @@
                     return data // 直接返回数据对象
                 })
         }
+
+// ---------------------------------------------------------------------------------------
+        export const getTotalMessage=()=>{
+            return axiosInstance.post('/total/getTotalMessage').then(({data})=>{
+                return data;//直接返回数据对象
+            })
+        }
+
+// ---------------------------------------------------------------------------------------
+        export const getTotalAmount=()=>{
+            return axiosInstance.post('/total/getTotalAmount').then(({data})=>{
+                return data;//直接返回数据对象
+            })
+        }
+
+// ---------------------------------------------------------------------------------------
+        export const getPopularList=()=>{
+            return axiosInstance.post('/total/getPopularList').then(({data})=>{
+                return data;//直接返回数据对象
+            })
+        }
+
+// ---------------------------------------------------------------------------------------
+        export const getLackList=()=>{
+            return axiosInstance.post('/total/getLackList').then(({data})=>{
+                return data;//直接返回数据对象
+            })
+        }

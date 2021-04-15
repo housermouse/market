@@ -21,7 +21,7 @@ function getSql(barCode, customer, id, saled, changesql, saledId) {
     // 1.准备
     let sql = 'SELECT * FROM t_shopping_cart';
     if (changesql) {
-        sql = 'SELECT saledId,saleTime from t_shopping_cart';
+        sql = 'SELECT saledId,saleTime,customer from t_shopping_cart';
     }
     // 是否是第一个条件的标志
     let first = true;
@@ -125,6 +125,7 @@ router.get("/deletedata", (req, res) => {
 // 更新用户
 router.post('/clearProduct', (req, resp) => {
     const {data, name} = req.body;
+    console.log(data);
     connection.query(getSql(data.barCode, name, "", "0"), function (error, getData) {
         if (error) throw error;
         const sql = `UPDATE t_commodity SET stockCount=${parseInt(data.stockCount) - parseInt(data.buyCount)} WHERE barCode=${data.barCode}`
@@ -323,7 +324,7 @@ router.post('/getHistoryList', function (req, resp) {
     console.log(req.body)
     let sql = '';
     if (!saledId || saledId === '') {
-        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime'
+        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,customer'
     } else {
         sql = getSql(barCode, name, '', '1', false, saledId)
     }

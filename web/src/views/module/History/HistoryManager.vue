@@ -51,13 +51,13 @@
                   <!--table的属性 @selection-change="handleSelectionChange" -->
                   <!--                    <el-table-column prop="barCode" label="条形码"></el-table-column>-->
                   <el-table-column prop="saledId" label="订单号"></el-table-column>
-<!--                  <el-table-column prop="category" label="商品分类"></el-table-column>-->
+                  <el-table-column prop="customer" label="客户"></el-table-column>
 <!--                  <el-table-column prop="salePrice" label="商品(元)"></el-table-column>-->
                   <!--                    <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>-->
                   <!--                    <el-table-column prop="marketPrice" label="市场价(元)"></el-table-column>-->
 <!--                  <el-table-column prop="stockCount" label="数量"></el-table-column>-->
 <!--                  <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>-->
-                  <el-table-column prop="saleTime" label="下单时间"></el-table-column>
+                  <el-table-column prop="saleTime" label="下单时间" :formatter="renderInputTime"></el-table-column>
                   <el-table-column label="操作" width='180px'>
                     <template slot-scope="scope">
                             <el-button size="mini"  @click="handleEdit(scope.row)">
@@ -106,7 +106,7 @@
             <el-table-column width="80" prop="commodityWeight" label="商品产地"></el-table-column>
             <el-table-column width="75" prop="commodityUnit" label="单位(克)"></el-table-column>
             <el-table-column width="75" prop="customer" label="客户"></el-table-column>
-            <el-table-column prop="saleTime" label="下单时间"></el-table-column>
+            <el-table-column prop="saleTime" label="下单时间" :formatter="renderInputTime"></el-table-column>
           </el-table>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -127,6 +127,7 @@ import {
   batchdelProduct, getLoginUsername,
 } from "@/api/apis.js";
 import * as printJS from "print-js";
+import moment from "moment";
 
     export default {
         data() {
@@ -176,6 +177,15 @@ import * as printJS from "print-js";
                         _this.tableData = data;
                     })
             },
+          // 渲染时间
+          renderInputTime(r, col, val) {
+            // moment函数参数需要处理的时间对象
+            // format时间处理格式
+
+            // eslint-disable-next-line no-console
+            console.log(val);
+            return moment(parseInt(val)).format("YYYY-MM-DD HH:mm:ss");
+          },
 
             //删除
             handleDelete(id) {
@@ -427,7 +437,7 @@ import * as printJS from "print-js";
                   // 失败提示,跳转登录
                 }
               })
-            // this.ajaxgetListProduct(this.currentPage);
+            // this.ajaxgetListProduct();
         }
     };
 </script>

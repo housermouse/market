@@ -4,47 +4,26 @@
             <div slot="header" class="clearfix">
                 <h3>销售数据统计</h3>
             </div>
-            <div class="text item">
-                <el-form
-                    :inline="true"
-                    :model="SellTotalForm"
-                    size="small"
-                    style="width:700px"
-                    >
-                        <el-form-item label="时间">
-
-                            <el-date-picker
-                            type="date"
-                            placeholder="选择日期"
-                            v-model="SellTotalForm.date1"
-                            style="width: 150px"
-                            ></el-date-picker>c vv
-
-                            <span>&emsp;&emsp;</span>
-
-                            <el-date-picker
-                            placeholder="选择时间"
-                            v-model="SellTotalForm.date2"
-                            style="width: 150px"></el-date-picker>&emsp;
-
-                        </el-form-item>
-                        <el-form-item>
-                            <el-select v-model="SellTotalForm.region" placeholder="销售情况统计">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="onSubmit">查询</el-button>
-                        </el-form-item>
-                </el-form>
-                <div id="sellcharts" :style="{width: '700px', height: '5 frr9r5edcccccccccccccccccccccccccccccccccccccccccccccccccccccc                                                                             00px'}"></div>
-            </div>
+           <el-row>
+             <el-col :span="12">
+               <p style="color: white;font-weight: bolder;">热门商品</p>
+               <ul>
+                <li v-for="(item,i) in popularProduct"  v-bind:key="item">{{i}}：{{item.name}}</li>
+             </ul>
+               </el-col>
+             <el-col :span="12">
+               <p style="color: white;font-weight: bolder;">缺货商品</p>
+               <ul>
+                <li v-for="(item,i) in lackProduct"  v-bind:key="item">{{i}}：{{item.name}}</li>
+               </ul></el-col>
+           </el-row>
         </el-card>
     </div>
 </template>
 
 <script>
+import {getLackList, getPopularList} from "@/api/apis";
+
     export default {
         name: 'hello',
         data(){
@@ -54,7 +33,9 @@
                    date1:"",
                    date2:""
                 },
-                msg: 'Welcome to Your Vue.js App',
+                popularProduct:[],
+                lackProduct:[],
+                msg: '缺货商品',
             }
         },
         // mounted(){
@@ -62,7 +43,14 @@
         // },
         methods:{
             onSubmit(){
-
+              getPopularList()
+                  .then(data => {
+                    this.popularProduct=data;
+                  })
+              getLackList()
+                  .then(data => {
+                    this.lackProduct=data;
+                  })
             },
             selltotal(option){
                 // 基于准备好的dom，初始化echarts实例
@@ -73,28 +61,8 @@
             }
         },
         mounted(){
-           // 指定图表的配置项和数据
-                var option = {
-                        title: {
-                            text: '销售统计',
-                            left: 'center'
-                        },
-                        xAxis: {
-                            type: 'category',
-                            data: ['2019-06-10', '2019-06-11', '2019-06-12', '2019-06-13', '2019-06-14', '2019-06-15', '2019-06-16']
-                        },
-                        yAxis: {
-                            type: 'value'
-                        },
-                        series: [{
-                            data: [820, 932, 901, 934, 1290, 1330, 1320],
-                            type: 'bar'
-                        }]
-                };
-
-            //调用echarts函数
-            this.selltotal(option)
-        }
+          this.onSubmit();
+        },
         
     }
 </script>

@@ -13,7 +13,7 @@ const connection = require('../db/mysqlConn')
 // SQL拼装函数
 function getSql(category, searchKey){
 	// 1.准备
-	let sql = 'SELECT id,barCode,name,stockPrice,category,stockCount,inputTime FROM t_commodity';
+	let sql = 'SELECT * FROM t_commodity';
 	// 是否是第一个条件的标志
 	let first=true;
   

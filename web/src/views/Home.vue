@@ -10,7 +10,7 @@
 
         </el-header>
 
-        <el-footer style="height:30px;color:#ccc">&copy;Copyright 2018 7+超市管理系统</el-footer>
+        <el-footer style="height:30px;color:#ccc">&copy;Copyright 2021 7+超市管理系统</el-footer>
       </el-main>
     </el-container>
   </div>

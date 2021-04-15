@@ -52,7 +52,7 @@
           <el-table-column prop="name" label="商品名称"></el-table-column>
 
           <el-table-column prop="category" label="商品分类"></el-table-column>
-          <el-table-column prop="stockPrice" label="进价(元)"></el-table-column>
+          <el-table-column width="80" prop="stockPrice" label="进价(元)"></el-table-column>
           <el-table-column prop="stockCount" label="商品数量"></el-table-column>
           <el-table-column prop="inputTime" label="添加时间" :formatter="renderInputTime"></el-table-column>
           <el-table-column label="操作" width="180px">
@@ -159,7 +159,10 @@ export default {
     renderInputTime(r, col, val) {
       // moment函数参数需要处理的时间对象
       // format时间处理格式
-      return moment(val).format("Y-MM-DD");
+
+      // eslint-disable-next-line no-console
+      console.log(val);
+      return moment(parseInt(val)).format("YYYY-MM-DD HH:mm:ss");
     },
 
     //查询商品

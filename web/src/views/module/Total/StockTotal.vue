@@ -2,8 +2,8 @@
     <div class="stock-total">
          <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <h3>进货统计</h3>
-                
+                <h3>销售统计</h3>
+
             </div>
             <div class="text item">
 <!--                <el-form -->
@@ -36,12 +36,16 @@
 <!--                    </el-form-item>-->
 <!--               </el-form>-->
                <div id="stockcharts" style="height:400px;"></div>
+              <div class="clearfix"><p style="color: white" >总营业额：{{totalAmount}}</p></div>
             </div>
         </el-card>
     </div>
 </template>
 
 <script>
+    import {getTotalMessage,getTotalAmount} from "@/api/apis";
+    import moment from "moment";
+
     export default {
         data(){
             return {
@@ -49,33 +53,56 @@
                   date1:"",
                   date2:""
               },
-              
+              totalAmount:''
             }
         },
         mounted(){
+            this.getAllAmount();
              this.onSubmit();
         },
         methods : {
-            onSubmit(){
-
+            onSubmit() {
+              // const _this= this;
               var option = {
                 title: {
-                  text: '进货统计',
-                  left:"center"
+                  text: '销售统计',
+                  left: "center"
                 },
                 xAxis: {
                   type: 'category',
-                  data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+                  data: [moment().subtract(4, 'days').format('MM-DD'),
+                    moment().subtract(3, 'days').format('MM-DD'),
+                    moment().subtract(2, 'days').format('MM-DD'),
+                    moment().subtract(1, 'days').format('MM-DD'),
+                    moment().format('MM-DD')]
                 },
                 yAxis: {
                   type: 'value'
                 },
                 series: [{
-                  data: [820, 932, 901, 934, 1290, 1330, 1320],
+                  data: [10, 15, 16, 11, 2],
                   type: 'line'
                 }]
-              };
-              this.StockTotal(option);
+              }
+              getTotalMessage()
+                  .then(data => {
+                    option.series[0].data[0]=data._4day;
+                    option.series[0].data[1]=data._3day;
+                    option.series[0].data[2]=data._2day;
+                    option.series[0].data[3]=data.yesterday;
+                    option.series[0].data[4]=data.today;
+                    this.StockTotal(option);
+                    // eslint-disable-next-line no-console
+                    console.log(data);
+                  })
+            },
+            getAllAmount(){
+              getTotalAmount()
+                  .then(data => {
+                    // eslint-disable-next-line no-console
+                    console.log(data);
+                    this.totalAmount=data.total;
+                  });
             },
             StockTotal(option){//echarts
                  // 基于准备好的dom，初始化echarts实例
@@ -88,7 +115,7 @@
                 myChart.setOption(option);
             }
         }
-        
+
     }
 </script>
 

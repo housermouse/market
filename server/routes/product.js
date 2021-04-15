@@ -12,7 +12,7 @@ const connection = require('../db/mysqlConn')
 // SQL拼装函数
 function getSql(category, searchKey){
     // 1.准备
-    let sql = 'SELECT id,category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit FROM t_commodity';
+    let sql = 'SELECT * FROM t_commodity';
     // 是否是第一个条件的标志
     let first=true;
   
@@ -119,7 +119,7 @@ router.post('/productAdd', (req, resp) => {
            const shopDay = new Date(birthDay);
            console.log(shopDay.getTime());
             // 2.2 用户添加第二步：  用户的添加
-            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,birthDay) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}','${(shopDay.getTime())}')`
+            const addSql = `INSERT INTO t_commodity(category,barCode,name,salePrice,marketPrice,stockPrice,stockCount,commodityWeight,commodityUnit,vipDiscount,promotion,goodsDesc,birthDay,inputTime) VALUES('${category}','${barCode}','${name}',${salePrice},${marketPrice},${stockPrice},${stockCount},'${commodityWeight}','${commodityUnit}','${vipDiscount}','${promotion}','${goodsDesc}','${(shopDay.getTime())}','${new Date().valueOf()}')`
 			console.log(addSql);
             connection.query(addSql, (err, result) => {
                 if (err) throw err;
