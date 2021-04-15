@@ -46,7 +46,7 @@
                         id="print_demo"
                         ref="tableData"
                         tooltip-effect="dark"
-                        style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;"
+                        style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;color: white;"
 
                 >
                     <!--table的属性 @selection-change="handleSelectionChange" -->
@@ -461,7 +461,6 @@ import {
     .product .el-table .el-table__row,.product .el-table td,.product .el-table th, .el-table tr {
         background: transparent !important;
         border:0;
-        color: #fff;
     }
     .product .el-table td{width: 80px !important;}
     .product .el-table--enable-row-hover .el-table__body tr:hover>td{

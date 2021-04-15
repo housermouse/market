@@ -211,7 +211,7 @@ router.post('/stockAdd', (req, resp) => {
             // })
            resp.send({
                success: false,
-               message: '添加库存失败，请联系管理员！'
+               message: '添加库存失败，没有该商品！'
            })
         }
     })

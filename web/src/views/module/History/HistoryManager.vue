@@ -45,7 +45,7 @@
                         stripe
                         ref="tableData"
                         tooltip-effect="dark"
-                        style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;"
+                        style="width: 100%;background:transparent;height: 400px;overflow-y: scroll; color: white;"
 
                 >
                   <!--table的属性 @selection-change="handleSelectionChange" -->
@@ -58,14 +58,12 @@
 <!--                  <el-table-column prop="stockCount" label="数量"></el-table-column>-->
 <!--                  <el-table-column prop="commodityWeight" label="商品产地"></el-table-column>-->
                   <el-table-column prop="saleTime" label="下单时间"></el-table-column>
-<!--                  <el-table-column label="操作" width='180px'>-->
-<!--                    <template slot-scope="scope">-->
-<!--                      &lt;!&ndash;                            <el-button size="mini"  @click="handleEdit(scope.row)">&ndash;&gt;-->
-<!--                      &lt;!&ndash;                                <i class="el-icon-edit"></i>编辑</el-button>&ndash;&gt;-->
-<!--                      <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">-->
-<!--                        <i class="el-icon-delete"></i>删除</el-button>-->
-<!--                    </template>-->
-<!--                    </el-table-column>-->
+                  <el-table-column label="操作" width='180px'>
+                    <template slot-scope="scope">
+                            <el-button size="mini"  @click="handleEdit(scope.row)">
+                                <i class="el-icon-edit"></i>编辑</el-button>
+                    </template>
+                    </el-table-column>
                 </el-table>
 
                 <el-pagination
@@ -89,29 +87,22 @@
 
 
         <!-- 修改弹窗 -->
-        <el-dialog title="修改" :visible.sync="dialogFormVisible">
-            <el-form :model="editForm">
-                <!-- 用户名 -->
-                <el-form-item label="订单号">
-                    <el-input v-model="editForm.saledId" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 售价 -->
-                <el-form-item label="售价">
-                    <el-input v-model="editForm.saleTime" auto-complete="off"></el-input>
-                </el-form-item>
-                <!-- 市场价 -->
-<!--                <el-form-item label="市场价">-->
-<!--                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>-->
-<!--                </el-form-item>-->
-<!--                &lt;!&ndash; 进价 &ndash;&gt;-->
-<!--                <el-form-item label="进价">-->
-<!--                    <el-input v-model="editForm.stockPrice" auto-complete="off"></el-input>-->
-<!--                </el-form-item>-->
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateProduct">更 新</el-button>
-            </div>
+        <el-dialog title="历史订单" :visible.sync="dialogFormVisible">
+          <el-table
+              :data="tableData"
+              stripe
+              ref="tableData"
+              tooltip-effect="dark"
+              style="width: 100%;height: 300px;overflow-y: scroll;"
+
+          >
+            <el-table-column style="color: black;" prop="saledId" label="订单号"></el-table-column>
+            <el-table-column prop="saleTime" label="下单时间"></el-table-column>
+          </el-table>
+<!--            <div slot="footer" class="dialog-footer">-->
+<!--                <el-button @click="dialogFormVisible = false">取 消</el-button>-->
+<!--                <el-button type="primary" @click="updateProduct">更 新</el-button>-->
+<!--            </div>-->
         </el-dialog>
     </div>
 </template>
@@ -432,7 +423,6 @@ import * as printJS from "print-js";
     .product .el-table .el-table__row,.product .el-table td,.product .el-table th, .el-table tr {
         background: transparent !important;
         border:0;
-        color: #fff;
     }
     .product .el-table td{width: 80px !important;}
     .product .el-table--enable-row-hover .el-table__body tr:hover>td{

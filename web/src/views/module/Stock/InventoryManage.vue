@@ -42,7 +42,7 @@
         <el-table
           :data="InventorytableData"
           stripe
-          style="width: 100%"
+          style="width: 100%;color: white;"
           ref="InventorytableData"
           tooltip-effect="dark"
           
@@ -354,7 +354,6 @@ export default {
 .el-table tr {
   background: transparent !important;
   border: 0;
-  color: #fff;
 }
 .inventory-manage .el-table td {
   width: 80px !important;

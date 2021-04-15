@@ -29,6 +29,7 @@
             <el-input
               style="width:200px"
               v-model="searchForm.searchKey"
+              clearable
               placeholder="(商品名称，条形码)"
               size="small"
             ></el-input>
@@ -44,7 +45,7 @@
           stripe
           ref="tableData"
           tooltip-effect="dark"
-           style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;"
+           style="width: 100%;background:transparent;height: 400px;overflow-y: scroll;color: white;"
           
         >
           <!--table的属性 @selection-change="handleSelectionChange" -->
@@ -100,7 +101,7 @@
               <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>
             </el-form-item>
             <!-- 市场价 -->
-            <el-form-item label="市场价">
+            <el-form-item label="月份">
               <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>
             </el-form-item>
             <!-- 进价 -->
@@ -358,7 +359,6 @@ export default {
 .product .el-table .el-table__row,.product .el-table td,.product .el-table th, .el-table tr {
   background: transparent !important;
   border:0;
-  color: #fff;
 }
 .product .el-table td{width: 80px !important;}
 .product .el-table--enable-row-hover .el-table__body tr:hover>td{
