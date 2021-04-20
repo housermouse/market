@@ -178,10 +178,10 @@ router.post('/clearProduct', (req, resp) => {
             if (err) throw err;
             if (getData.length > 0) {
                 var count = getData[0].stockCount;
-                const sql = `UPDATE t_shopping_cart SET  stockCount='${parseInt(count) + parseInt(data.buyCount)}' WHERE barCode=${data.barCode}`
+                const sql = `UPDATE t_shopping_cart SET  stockCount='${parseInt(count) + parseInt(data.buyCount)}' WHERE barCode=${data.barCode} and saled='0'`
                 connection.query(sql, (err, result) => {
                     if (err) throw err;
-
+                    console.log(result.affectedRows)
                     if (result.affectedRows === 1) { // 影响1行,代表成功修改
                         resp.send({
                             success: true,
@@ -370,7 +370,7 @@ router.post('/getHistoryList', function (req, resp) {
     if (!saledId || saledId === '') {
         sql = getSql(barCode, name, '', '1', true, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf()) + ' group by saledId,saleTime,buyMan order by saleTime desc'
     } else {
-        sql = getSql(barCode, name, '', '1', false, saledId,false,buyMan,moment(startTime).startOf().valueOf('day'),moment(endTime).endOf('day').valueOf())
+        sql = getSql(barCode, name, '', '1', false, saledId,false,buyMan)
     }
     let start=(currentPage-1)*pageSize;
     if(pageSize&&currentPage){
@@ -384,7 +384,7 @@ router.post('/getHistoryList', function (req, resp) {
             if (!saledId || saledId === '') {
                 countSql+= getSql(barCode, name, '', '1', true, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf()) + ' group by saledId,saleTime,buyMan order by saleTime desc'
             } else {
-                countSql += getSql(barCode, name, '', '1', false, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf())
+                countSql += getSql(barCode, name, '', '1', false, saledId,false,buyMan)
             }
             countSql += ') a';
             connection.query(countSql,(err,countResult)=>{

@@ -200,6 +200,8 @@ export default {
           .then(data => {
             this.tableData = data.data;
             this.total = data.total;
+            _this.currentPage=1;
+            _this.pageSize=5;
           })
     },
     // 渲染时间

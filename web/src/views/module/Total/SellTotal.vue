@@ -8,14 +8,18 @@
              <el-col :span="12">
                <p style="color: white;font-weight: bolder;padding-left: 20px;">热门商品</p>
                <ul>
-                <li v-for="(item,i) in popularProduct" style="list-style: none;color: white;"  v-bind:key="item">{{i}}：{{item.name}}</li>
+                <li v-for="(item,i) in popularProduct" style="list-style: none;color: white;"  v-bind:key="item">{{i+1}}：{{item.name}}</li>
              </ul>
                </el-col>
              <el-col :span="12">
                <p style="color: white;font-weight: bolder;padding-left: 20px;">缺货商品</p>
-               <ul>
-                <li v-for="(item,i) in lackProduct"  style="list-style: none;color: white;" v-bind:key="item">{{i}}：{{item.name}}</li>
-               </ul></el-col>
+               <ul v-if="lackProduct==null||lackProduct.length==0">
+                <li style="list-style: none;color: white;"> 无</li>
+               </ul>
+               <ul v-else>
+                 <li v-for="(item,i) in lackProduct"  style="list-style: none;color: white;" v-bind:key="item">{{i+1}}：{{item.name}}</li>
+               </ul>
+             </el-col>
            </el-row>
         </el-card>
     </div>

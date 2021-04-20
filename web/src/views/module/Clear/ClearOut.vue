@@ -193,6 +193,8 @@ export default {
           .then(data => {
             _this.tableData = data.data;
             this.total = data.total;
+            _this.currentPage=1;
+            _this.pageSize=5;
           })
     },
 

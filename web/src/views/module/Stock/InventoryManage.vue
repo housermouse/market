@@ -150,9 +150,9 @@ export default {
     //渲染页面
     stockList() {
       // 发送请求加载数据
-      stockList().then(data => {
+      stockList({currentPage:1, pageSize:5}).then(data => {
         // 把结果更新到数据对象,由双向绑定完成页面更新
-        this.InventorytableData = data;
+        this.InventorytableData = data.data;
       });
     },
 
@@ -172,13 +172,15 @@ export default {
       stockList({category,searchKey,currentPage:1, pageSize:5}).then(data => {
         _this.InventorytableData = data.data;
         this.total = data.total;
+        _this.currentPage=1;
+        _this.pageSize=5;
       });
     },
 
     //删除
     handleDeleteStock(id) {
       //提示用户 是否进行此操作
-      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
