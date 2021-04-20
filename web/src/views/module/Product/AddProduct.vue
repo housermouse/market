@@ -59,7 +59,6 @@
                 v-model="productAddTable.stockPrice"
                 style="width:180px"
                 size="small"
-                @blur="countPrice"
               ></el-input>
               <span style="margin-left:10px">元</span>
             </el-form-item>

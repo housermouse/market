@@ -10,18 +10,21 @@ const connection = require('../db/mysqlConn')
 
 
 // SQL拼装函数
-function getSql(category, searchKey){
+function getSql(category, searchKey,count){
     // 1.准备
     let sql = 'SELECT * FROM t_commodity';
+    if(count){
+        sql =  'select count(*) as total FROM t_commodity';
+    }
     // 是否是第一个条件的标志
     let first=true;
   
     // 2.执行判断
     if(category){
       if(first){ // 第一个条件
-        sql+= ` WHERE category='${category}'`
+        sql+= ` WHERE category = '${category}'`
       }else{// 不是第一个条件
-        sql+= ` AND category='${category}'`
+        sql+= ` AND category = '${category}'`
       }
   
       first=false
@@ -41,13 +44,27 @@ function getSql(category, searchKey){
 //渲染列表
 router.post('/getProductList', function (req, resp) {
     // 1. 准备
-    const {category, searchKey}=req.body;
+    const {category, searchKey,pageSize,currentPage}=req.body;
+    let start=(currentPage-1)*pageSize;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
-    connection.query(getSql(category, searchKey), function (error, data) {
-      if (error) throw error;
-      // 3. 结果
-      resp.send(data);
+    var sql = getSql(category, searchKey)
+    if(pageSize&&currentPage){
+        sql+= ' LIMIT '+start+','+pageSize;
+    }
+    connection.query(sql, function (error, data) {
+        if (error) throw error;
+        if(data.length>0){
+            const countSql=getSql(category,searchKey,true);
+            connection.query(countSql,(err,countResult)=>{
+                resp.send({
+                    data:data,
+                    total:countResult[0].total
+                })
+            })
+        }else{
+            resp.send([])
+        }
     })
 });
 

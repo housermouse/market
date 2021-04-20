@@ -120,7 +120,7 @@
 
 <script>
 
-import { getProductList,productDelete,updateProduct,getProductDataByPage,batchdelProduct} from "@/api/apis.js";
+import { getProductList,productDelete,updateProduct,batchdelProduct} from "@/api/apis.js";
 
 export default {
   data() {
@@ -159,16 +159,19 @@ export default {
       // 发送请求加载数据
       getProductList().then(data => {
       // 把结果更新到数据对象,由双向绑定完成页面更新
-      this.tableData = data;
+      this.tableData = data.data;
+        this.total = data.total;
       });
     },
 
     //查询用户
     doSearch(){
       const _this= this;
-      getProductList(this.searchForm)
+      const {category,searchKey}=this.searchForm;
+      getProductList({category,searchKey,currentPage:1, pageSize:5})
             .then(data =>{
-                _this.tableData = data;
+                _this.tableData = data.data;
+              this.total = data.total;
             })
     },
 
@@ -244,9 +247,9 @@ export default {
 
     // 分页
     ajaxgetListProduct() {
-      getProductDataByPage(this.currentPage, this.pageSize).then(res => {
-        this.tableData = res.data.data;
-        this.total = res.data.total;
+      getProductList({currentPage:this.currentPage, pageSize:this.pageSize}).then(res => {
+        this.tableData = res.data;
+        this.total = res.total;
       });
     },
 
@@ -326,7 +329,7 @@ export default {
   },
   //页面加载时候调用一次渲染
   mounted() {
-    this.ajaxgetListProduct(this.currentPage);
+    this.ajaxgetListProduct({currentPage:this.currentPage, pageSize:this.pageSize});
   }
 };
 </script>

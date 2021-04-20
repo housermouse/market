@@ -36,7 +36,7 @@
 <!--                    </el-form-item>-->
 <!--               </el-form>-->
                <div id="stockcharts" style="height:400px;"></div>
-              <div class="clearfix"><p style="color: white" >总营业额：{{totalAmount}}</p></div>
+              <div class="clearfix"><p style="color: white" >总营业额：{{totalAmount}}元</p></div>
             </div>
         </el-card>
     </div>
@@ -76,10 +76,12 @@
                     moment().subtract(1, 'days').format('MM-DD'),
                     moment().format('MM-DD')]
                 },
+                tooltip:{},
                 yAxis: {
                   type: 'value'
                 },
                 series: [{
+                  name:'销售额',
                   data: [10, 15, 16, 11, 2],
                   type: 'line'
                 }]

@@ -17,11 +17,14 @@ function getUUID() {
 }
 
 // SQL拼装函数
-function getSql(barCode, customer, id, saled, changesql, saledId) {
+function getSql(barCode, customer, id, saled, changesql, saledId,count) {
     // 1.准备
     let sql = 'SELECT * FROM t_shopping_cart';
     if (changesql) {
-        sql = 'SELECT saledId,saleTime,customer from t_shopping_cart';
+        sql = 'SELECT saledId,saleTime,buyMan from t_shopping_cart';
+    }
+    if(count){
+        sql = "SELECT count(*) as total FROM t_shopping_cart";
     }
     // 是否是第一个条件的标志
     let first = true;
@@ -93,8 +96,17 @@ router.post('/getClearList', function (req, resp) {
     // 2) 执行SQL
     connection.query(getSql(barCode, name, "", saled), function (error, data) {
         if (error) throw error;
-        // 3. 结果
-        resp.send(data);
+        if(data.length>0){
+            const countSql=getSql(barCode, name, "", saled,false,null,true);
+            connection.query(countSql,(err,countResult)=>{
+                resp.send({
+                    data:data,
+                    total:countResult[0].total
+                })
+            })
+        }else{
+            resp.send([])
+        }
     })
 });
 
@@ -318,35 +330,53 @@ router.get("/batchdel", (req, res) => {
 //渲染列表
 router.post('/getHistoryList', function (req, resp) {
     // 1. 准备
-    const {barCode, saledId, name} = req.body;
+    const {barCode, saledId, name,pageSize,currentPage} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
-    console.log(req.body)
     let sql = '';
     if (!saledId || saledId === '') {
-        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,customer'
+        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,buyMan'
     } else {
         sql = getSql(barCode, name, '', '1', false, saledId)
     }
-
+    let start=(currentPage-1)*pageSize;
+    if(pageSize&&currentPage){
+        sql+= ' LIMIT '+start+','+pageSize;
+    }
     connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果
-        console.log(data)
-        resp.send(data);
+        if(data.length>0){
+            let countSql='select count(*) as total from (';
+            if (!saledId || saledId === '') {
+                countSql+= getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,buyMan'
+            } else {
+                countSql += getSql(barCode, name, '', '1', false, saledId)
+            }
+            countSql += ') a';
+            console.log(countSql);
+            connection.query(countSql,(err,countResult)=>{
+                resp.send({
+                    data:data,
+                    total:countResult[0].total
+                })
+            })
+        }else{
+            resp.send([])
+        }
     })
 });
 
 //渲染列表
 router.post('/clearOut', function (req, resp) {
     // 1. 准备
-    const {name} = req.body;
+    const {name,buyMan} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     const uuid = getUUID();
     const saleTime = new Date().getTime();
     console.log(req.body);
-    let sql = `update t_shopping_cart set saled = '1',saledId='${uuid}',saleTime='${saleTime}' where customer = '${name}' and saled = '0'`
+    let sql = `update t_shopping_cart set saled = '1',saledId='${uuid}',saleTime='${saleTime}' ,buyMan='${buyMan}' where customer = '${name}' and saled = '0'`
     connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果

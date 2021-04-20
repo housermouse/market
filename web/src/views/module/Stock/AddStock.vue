@@ -40,7 +40,7 @@
 
         <el-form-item>
           <el-button type="primary" @click="stockAdd()">保存</el-button>
-          <el-button>重置</el-button>
+          <el-button @click="reset('stock')">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -80,6 +80,9 @@ export default {
     };
   },
   methods: {
+    reset(formName){
+      this.$refs[formName].resetFields();
+    },
      stockAdd() {
       // 缓存全局this
       const _this = this;

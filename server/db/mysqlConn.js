@@ -4,7 +4,7 @@ var mysql = require('mysql');
 
 // 2、 配置mysql连接
 const connection =  mysql.createConnection({
-    host: '120.77.250.66', // 数据库地址,如果是IP，必须在数据库中配置外部支持
+    host: '192.168.59.129', // 数据库地址,如果是IP，必须在数据库中配置外部支持
     // host: '172.16.7.131', // 数据库地址,如果是IP，必须在数据库中配置外部支持
 		user: 'root', // 用户名
 		password: 'abc***123', // 密码

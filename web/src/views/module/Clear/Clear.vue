@@ -29,6 +29,7 @@
                         <el-input
                                 style="width:200px"
                                 v-model="searchForm.searchKey"
+                                clearable
                                 placeholder="(商品名称，条形码)"
                                 size="small"
                         ></el-input>
@@ -170,16 +171,18 @@ import {
                 // 发送请求加载数据
                 getProductList().then(data => {
                     // 把结果更新到数据对象,由双向绑定完成页面更新
-                    this.tableData = data;
+                    this.tableData = data.data;
                 });
             },
 
             //查询用户
             doSearch(){
-                const _this= this;
-                getProductList(this.searchForm)
+              const _this= this;
+              const {category,searchKey}=this.searchForm;
+              getProductList({category,searchKey,currentPage:1, pageSize:5})
                     .then(data =>{
-                        _this.tableData = data;
+                        _this.tableData = data.data;
+                      this.total = data.total;
                     })
             },
 

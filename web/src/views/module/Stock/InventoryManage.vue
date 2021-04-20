@@ -31,6 +31,7 @@
               style="width:200px"
               v-model="searchForm.searchKey"
               placeholder="(商品名称，条形码)"
+              clearable
               size="small"
             ></el-input>
           </el-form-item>
@@ -161,15 +162,16 @@ export default {
       // format时间处理格式
 
       // eslint-disable-next-line no-console
-      console.log(val);
       return moment(parseInt(val)).format("YYYY-MM-DD HH:mm:ss");
     },
 
     //查询商品
     doSearch() {
       const _this = this;
-      stockList(this.searchForm).then(data => {
-        _this.InventorytableData = data;
+      const {category,searchKey}=this.searchForm;
+      stockList({category,searchKey,currentPage:1, pageSize:5}).then(data => {
+        _this.InventorytableData = data.data;
+        this.total = data.total;
       });
     },
 

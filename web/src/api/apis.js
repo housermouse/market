@@ -351,9 +351,9 @@
             return axiosInstance.get("/clear/batchdel" , {params:{IdArr}})
         }
 
-        export const clearOutProduct=(name)=>{
+        export const clearOutProduct=(name,buyMan)=>{
             // eslint-disable-next-line no-console
-            return axiosInstance.post("/clear/clearOut" ,  {name})
+            return axiosInstance.post("/clear/clearOut" ,  {name,buyMan})
         }
 
 // ---------------------------------------------------------------------------------------

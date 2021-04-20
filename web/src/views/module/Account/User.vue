@@ -212,7 +212,7 @@ export default {
     renderInputTime(r, col, val) {
       // moment函数参数需要处理的时间对象
       // format时间处理格式
-      return moment(val).format("Y-MM-DD");
+      return moment(val).format("YYYY-MM-DD");
     },
 
     //渲染页面

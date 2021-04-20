@@ -6,15 +6,15 @@
             </div>
            <el-row>
              <el-col :span="12">
-               <p style="color: white;font-weight: bolder;">热门商品</p>
+               <p style="color: white;font-weight: bolder;padding-left: 20px;">热门商品</p>
                <ul>
-                <li v-for="(item,i) in popularProduct"  v-bind:key="item">{{i}}：{{item.name}}</li>
+                <li v-for="(item,i) in popularProduct" style="list-style: none;color: white;"  v-bind:key="item">{{i}}：{{item.name}}</li>
              </ul>
                </el-col>
              <el-col :span="12">
-               <p style="color: white;font-weight: bolder;">缺货商品</p>
+               <p style="color: white;font-weight: bolder;padding-left: 20px;">缺货商品</p>
                <ul>
-                <li v-for="(item,i) in lackProduct"  v-bind:key="item">{{i}}：{{item.name}}</li>
+                <li v-for="(item,i) in lackProduct"  style="list-style: none;color: white;" v-bind:key="item">{{i}}：{{item.name}}</li>
                </ul></el-col>
            </el-row>
         </el-card>
