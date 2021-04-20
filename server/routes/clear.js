@@ -4,6 +4,7 @@
 
 var express = require('express');
 var router = express.Router();
+var moment = require('moment');
 
 // 引入数据库连接模块
 const connection = require('../db/mysqlConn')
@@ -17,7 +18,7 @@ function getUUID() {
 }
 
 // SQL拼装函数
-function getSql(barCode, customer, id, saled, changesql, saledId,count) {
+function getSql(barCode, customer, id, saled, changesql, saledId,count,buyMan,startTime,endTime) {
     // 1.准备
     let sql = 'SELECT * FROM t_shopping_cart';
     if (changesql) {
@@ -79,6 +80,38 @@ function getSql(barCode, customer, id, saled, changesql, saledId,count) {
             sql += ` WHERE saledId='${saledId}'`
         } else {// 不是第一个条件
             sql += ` AND saledId='${saledId}'`
+        }
+
+        first = false
+    }
+
+    // 2.执行判断
+    if (buyMan && buyMan != "") {
+        if (first) { // 第一个条件
+            sql += ` WHERE buyMan like '%${buyMan}%'`
+        } else {// 不是第一个条件
+            sql += ` AND buyMan like '%${buyMan}%'`
+        }
+
+        first = false
+    }
+
+    // 2.执行判断
+    if (startTime && startTime != "") {
+        if (first) { // 第一个条件
+            sql += ` WHERE saleTime >= ${startTime}`
+        } else {// 不是第一个条件
+            sql += ` AND saleTime >= '${startTime}'`
+        }
+
+        first = false
+    }
+
+    if (endTime && endTime != "") {
+        if (first) { // 第一个条件
+            sql += ` WHERE saleTime <= ${endTime}`
+        } else {// 不是第一个条件
+            sql += ` AND saleTime <= '${endTime}'`
         }
 
         first = false
@@ -330,14 +363,14 @@ router.get("/batchdel", (req, res) => {
 //渲染列表
 router.post('/getHistoryList', function (req, resp) {
     // 1. 准备
-    const {barCode, saledId, name,pageSize,currentPage} = req.body;
+    const {barCode, saledId, name,pageSize,currentPage,buyMan,endTime,startTime} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     let sql = '';
     if (!saledId || saledId === '') {
-        sql = getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,buyMan'
+        sql = getSql(barCode, name, '', '1', true, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf()) + ' group by saledId,saleTime,buyMan order by saleTime desc'
     } else {
-        sql = getSql(barCode, name, '', '1', false, saledId)
+        sql = getSql(barCode, name, '', '1', false, saledId,false,buyMan,moment(startTime).startOf().valueOf('day'),moment(endTime).endOf('day').valueOf())
     }
     let start=(currentPage-1)*pageSize;
     if(pageSize&&currentPage){
@@ -349,12 +382,11 @@ router.post('/getHistoryList', function (req, resp) {
         if(data.length>0){
             let countSql='select count(*) as total from (';
             if (!saledId || saledId === '') {
-                countSql+= getSql(barCode, name, '', '1', true, saledId) + ' group by saledId,saleTime,buyMan'
+                countSql+= getSql(barCode, name, '', '1', true, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf()) + ' group by saledId,saleTime,buyMan order by saleTime desc'
             } else {
-                countSql += getSql(barCode, name, '', '1', false, saledId)
+                countSql += getSql(barCode, name, '', '1', false, saledId,false,buyMan,moment(startTime).startOf('day').valueOf(),moment(endTime).endOf('day').valueOf())
             }
             countSql += ') a';
-            console.log(countSql);
             connection.query(countSql,(err,countResult)=>{
                 resp.send({
                     data:data,
@@ -370,13 +402,13 @@ router.post('/getHistoryList', function (req, resp) {
 //渲染列表
 router.post('/clearOut', function (req, resp) {
     // 1. 准备
-    const {name,buyMan} = req.body;
+    const {name,buyMan,shopName,shopAddress,shopNumber} = req.body;
     // resp.send(getSql(category, searchKey));
     // 2) 执行SQL
     const uuid = getUUID();
     const saleTime = new Date().getTime();
     console.log(req.body);
-    let sql = `update t_shopping_cart set saled = '1',saledId='${uuid}',saleTime='${saleTime}' ,buyMan='${buyMan}' where customer = '${name}' and saled = '0'`
+    let sql = `update t_shopping_cart set saled = '1',saledId='${uuid}',saleTime='${saleTime}',shopName='${shopName}',shopAddress = '${shopAddress}',shopNumber='${shopNumber}' ,buyMan='${buyMan}' where customer = '${name}' and saled = '0'`
     connection.query(sql, function (error, data) {
         if (error) throw error;
         // 3. 结果

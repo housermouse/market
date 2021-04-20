@@ -99,9 +99,15 @@
           <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <!--                &lt;!&ndash; 售价 &ndash;&gt;-->
-        <!--                <el-form-item label="售价">-->
-        <!--                    <el-input v-model="editForm.salePrice" auto-complete="off"></el-input>-->
-        <!--                </el-form-item>-->
+        <el-form-item label="店铺名称">
+            <el-input v-model="editForm.shopName" auto-complete="off" placeholder="华联超市"></el-input>
+        </el-form-item>
+        <el-form-item label="店铺电话">
+          <el-input v-model="editForm.shopNumber" auto-complete="off" placeholder="1234567890"></el-input>
+        </el-form-item>
+        <el-form-item label="店铺地址">
+          <el-input v-model="editForm.shopAddress" auto-complete="off" placeholder="福建省闽侯县上街镇永嘉天地1号店"></el-input>
+        </el-form-item>
         <!--                &lt;!&ndash; 市场价 &ndash;&gt;-->
         <!--                <el-form-item label="市场价">-->
         <!--                    <el-input v-model="editForm.marketPrice" auto-complete="off"></el-input>-->
@@ -113,7 +119,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="oncancel">取 消</el-button>
-        <el-button type="primary" @click="batchclear(editForm.name)">打 印</el-button>
+        <el-button type="primary" @click="batchclear(editForm)">打 印</el-button>
       </div>
     </el-dialog>
   </div>
@@ -145,6 +151,9 @@ export default {
       editForm: {
         id: "",
         name: "",
+        shopName:"华联超市",
+        shopAddress:"福建省闽侯县上街镇永嘉天地1号店",
+        shopNumber:"1234567890",
         salePrice: "",
         marketPrice: "",
         stockPrice: "",
@@ -219,7 +228,7 @@ export default {
           .catch(() => {
           });
     },
-    batchclear(customer) {
+    batchclear(form) {
       const _this = this;
       getCleartList(this.searchForm.barCode, _this.name, "0")
           .then(resultData => {
@@ -238,7 +247,7 @@ export default {
               })
             }
             printJS({
-              documentTitle: '华联超市管理系统',
+              documentTitle: form.shopName,
               printable: data,
               properties: [
                 {
@@ -283,13 +292,13 @@ export default {
                 }
               ],
               type: 'json',
-              header: '店铺联系电话：1234567890 地址：福建省福州市闽侯县xxx号铺' + '--------------------------------------客户姓名：' + customer,
+              header: '店铺联系电话：'+form.shopNumber+' 地址：'+form.shopAddress+ '--------------------------------------客户姓名：' + form.name,
               headerStyle: 'font-size:12px;',
               // 样式设置
               gridStyle: 'border: 2px solid #3971A5;',
               gridHeaderStyle: 'color: red;  border: 2px solid #3971A5;'
             })
-            clearOutProduct(_this.name,customer).then(resultData => {
+            clearOutProduct(_this.name,form).then(resultData => {
               // eslint-disable-next-line no-console
               console.log(resultData);
               getCleartList(this.currentPage, this.pageSize).then(res => {

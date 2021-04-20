@@ -25,15 +25,29 @@
           <!--                            <el-option label="日用品" value="日用品"></el-option>-->
           <!--                        </el-select>-->
           <!--                    </el-form-item>-->
-                              <el-form-item label="关键字：">
-                                  <el-input
-                                          style="width:200px"
-                                          clearable
-                                          v-model="searchForm.saledId"
-                                          placeholder="(订单号)"
-                                          size="small"
-                                  ></el-input>
-                              </el-form-item>
+          <el-form-item label="关键字：">
+              <el-input
+                      style="width:200px"
+                      clearable
+                      v-model="searchForm.buyMan"
+                      placeholder="(客户)"
+                      size="small"
+              ></el-input>
+          </el-form-item>
+          <el-form-item label="开始时间：">
+            <el-date-picker
+                style="width:200px"
+                clearable
+                v-model="searchForm.startTime"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间：">
+            <el-date-picker
+                style="width:200px"
+                clearable
+                v-model="searchForm.endTime"
+            ></el-date-picker>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="doSearch">查询</el-button>
 <!--            <el-button type="primary" size="small" @click="batchclear">全部打印</el-button>-->
@@ -136,7 +150,10 @@ export default {
       searchForm: {
         category: "",
         searchKey: "",
-        saledId: ""
+        saledId: "",
+        startTime:"",
+        endTime:"",
+        buyMan:""
       },
       saledData: [],
       tableData: [],
@@ -174,8 +191,12 @@ export default {
     //查询用户
     doSearch() {
       const _this = this;
-      const {saledId} = this.searchForm
-      getHistoryList({saledId,currentPage:'1', pageSize:'5'}, _this.name)
+      const {buyMan,startTime,endTime} = this.searchForm
+      if(moment(startTime).valueOf()>moment(endTime).valueOf()){
+        this.$message.error('开始时间不能大于结束时间');
+        return;
+      }
+      getHistoryList({buyMan,startTime,endTime,currentPage:'1', pageSize:'5'}, _this.name)
           .then(data => {
             this.tableData = data.data;
             this.total = data.total;
@@ -312,7 +333,7 @@ export default {
               })
             }
             printJS({
-              documentTitle: '华联超市管理系统',
+              documentTitle: this.list[0].shopName,
               printable: data,
               properties: [
                 {
@@ -357,7 +378,7 @@ export default {
                 }
               ],
               type: 'json',
-              header: '店铺联系电话：1234567890 地址：福建省福州市闽侯县xxx号铺' + '--------------------------------------客户姓名：' + this.list[0].buyMan,
+              header: '店铺联系电话：'+this.list[0].shopNumber+' 地址：'+this.list[0].shopAddress+ '--------------------------------------客户姓名：' + this.list[0].buyMan,
               headerStyle: 'font-size:12px;',
               // 样式设置
               gridStyle: 'border: 2px solid #3971A5;',
